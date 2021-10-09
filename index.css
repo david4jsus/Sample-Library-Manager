@@ -1,0 +1,47 @@
+:root
+{
+   --sidebar-width: 80px;
+}
+
+.sidebar
+{
+   height: 100%;
+   width: var(--sidebar-width);
+   position: fixed;
+   z-index: 1;
+   top: 0;
+   left: 0;
+   background-color: darkgrey;
+   overflow-x: hidden;
+   padding: 5px;
+}
+
+.sidebar a
+{
+   padding: 5px;
+   text-decoration: none;
+   display: block;
+   color: black;
+}
+
+.app-links
+{
+   position: fixed;
+   bottom: 0;
+}
+
+.main
+{
+   margin-left: var(--sidebar-width);
+   padding: 10px;
+}
+
+.sample
+{
+   margin-left: var(--sidebar-width);
+   width: 100%;
+   height: 200px;
+   position: fixed;
+   bottom: 0;
+   padding: 10px;
+}
