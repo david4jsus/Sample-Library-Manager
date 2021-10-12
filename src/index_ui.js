@@ -1,6 +1,17 @@
 // Load React components on window load
 window.onload = () =>
 {
+   // Enum to keep track fo what tab the user is in
+   var Views =
+   {
+      FOLDERS: "folders",
+      LIBRARIES: "libraries",
+      TAGS: "tags",
+      GROUPS: "groups",
+      ABOUT: "about",
+      SETTINGS: "settings"
+   };
+
    // Main React component
    class MainView extends React.Component
    {
@@ -14,9 +25,44 @@ window.onload = () =>
 
       render()
       {
+         return[
+            React.createElement(Sidebar, null),
+            React.createElement(TabView, {view: this.state.view}),
+            React.createElement(SelectedSample, null)
+         ];
+      }
+   }
+
+   // Sidebar
+   class Sidebar extends React.Component
+   {
+      render()
+      {
+         return[
+            React.createElement("div", {className: "sidebar"},
+               React.createElement("div", {className: "category-links"},
+                  React.createElement("a", {id: "folders_link", href: "#"}, "Folders"),
+                  React.createElement("a", {id: "libraries_link", href: "#"}, "Libraries"),
+                  React.createElement("a", {id: "tags_link", href: "#"}, "Tags"),
+                  React.createElement("a", {id: "groups_link", href: "#"}, "Groups")
+               ),
+               React.createElement("div", {className: "app-links"},
+                  React.createElement("a", {id: "about_link", href: "#"}, "About"),
+                  React.createElement("a", {id: "settings_link", href: "#"}, "Settings")
+               )
+            )
+         ];
+      }
+   }
+
+   // Main view
+   class TabView extends React.Component
+   {
+      render()
+      {
          // Get the corresponding view
          let view = null;
-         switch (this.state.view)
+         switch (this.props.view)
          {
             default:
             case Views.FOLDERS:
@@ -41,7 +87,9 @@ window.onload = () =>
 
          // Render the corresponding view
          return[
-            view
+            React.createElement("div", {id: "main_view", className: "main"},
+               view
+            )
          ];
       }
    }
@@ -126,7 +174,9 @@ window.onload = () =>
       render()
       {
          return[
-            React.createElement("h1", null, "SLM: About")
+            React.createElement("h1", null, "Sample Library Manager"),
+            React.createElement("p", null, "Click on a tab to get started!"),
+            React.createElement("p", null, "With this app, you can organize your samples in different ways and then click and drag your selected sample right onto your DAW or sound editing program.")
          ];
       }
    }
@@ -148,9 +198,22 @@ window.onload = () =>
       }
    }
 
+   // View for the selected sample
+   class SelectedSample extends React.Component
+   {
+      render()
+      {
+         return[
+            React.createElement("div", {id: "sample_view", className: "sample"},
+               React.createElement("h1", null, "[Selected sample here]")
+            )
+         ];
+      }
+   }
+
    // Main rendering function
    ReactDOM.render(
       React.createElement(MainView, null),
-      document.getElementById("main_view")
+      document.getElementById("react")
    );
 }
