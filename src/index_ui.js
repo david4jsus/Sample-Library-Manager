@@ -21,12 +21,19 @@ window.onload = () =>
          this.state = {
             view: Views.ABOUT
          }
+         this.changeTabView = this.changeTabView.bind(this);
+      }
+
+      // Change the tab view
+      changeTabView(newView)
+      {
+         this.setState({view: newView});
       }
 
       render()
       {
          return[
-            React.createElement(Sidebar, null),
+            React.createElement(Sidebar, {changeTabView: this.changeTabView}),
             React.createElement(TabView, {view: this.state.view}),
             React.createElement(SelectedSample, null)
          ];
@@ -41,14 +48,14 @@ window.onload = () =>
          return[
             React.createElement("div", {className: "sidebar"},
                React.createElement("div", {className: "category-links"},
-                  React.createElement("a", {id: "folders_link", href: "#"}, "Folders"),
-                  React.createElement("a", {id: "libraries_link", href: "#"}, "Libraries"),
-                  React.createElement("a", {id: "tags_link", href: "#"}, "Tags"),
-                  React.createElement("a", {id: "groups_link", href: "#"}, "Groups")
+                  React.createElement("a", {id: "folders_link", href: "#", onClick: () => this.props.changeTabView(Views.FOLDERS)}, "Folders"),
+                  React.createElement("a", {id: "libraries_link", href: "#", onClick: () => this.props.changeTabView(Views.LIBRARIES)}, "Libraries"),
+                  React.createElement("a", {id: "tags_link", href: "#", onClick: () => this.props.changeTabView(Views.TAGS)}, "Tags"),
+                  React.createElement("a", {id: "groups_link", href: "#", onClick: () => this.props.changeTabView(Views.GROUPS)}, "Groups")
                ),
                React.createElement("div", {className: "app-links"},
-                  React.createElement("a", {id: "about_link", href: "#"}, "About"),
-                  React.createElement("a", {id: "settings_link", href: "#"}, "Settings")
+                  React.createElement("a", {id: "about_link", href: "#", onClick: () => this.props.changeTabView(Views.ABOUT)}, "About"),
+                  React.createElement("a", {id: "settings_link", href: "#", onClick: () => this.props.changeTabView(Views.SETTINGS)}, "Settings")
                )
             )
          ];
