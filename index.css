@@ -1,12 +1,17 @@
+/*VARIABLES*/
+
 :root
 {
    --sidebar-width: 80px;
+   --folder-structure-width: 100px;
 }
+
+/* MAIN */
 
 .sidebar
 {
-   height: 100%;
    width: var(--sidebar-width);
+   height: 100%;
    position: fixed;
    z-index: 1;
    top: 0;
@@ -33,7 +38,6 @@
 .main
 {
    margin-left: var(--sidebar-width);
-   padding: 10px;
 }
 
 .sample
@@ -44,4 +48,22 @@
    position: fixed;
    bottom: 0;
    padding: 10px;
+   background-color: lightskyblue;
+}
+
+/* FOLDER VIEW */
+
+.folder-structure-view
+{
+   width: var(--folder-structure-width);
+   height: 100%;
+   position: fixed;
+   top: 0;
+   left: var(--sidebar-width);
+   background-color: gainsboro;
+}
+
+.folder-contents-view
+{
+   margin-left: var(--folder-structure-width);
 }

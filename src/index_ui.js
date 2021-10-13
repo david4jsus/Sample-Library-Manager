@@ -113,7 +113,45 @@ window.onload = () =>
       render()
       {
          return[
-            React.createElement("h1", null, "SLM: Folders")
+            React.createElement(FolderStructureView, null),
+            React.createElement(FolderContentsView, null)
+         ];
+      }
+   }
+
+   // Folder structure view for FoldersView
+   class FolderStructureView extends React.Component
+   {
+      render()
+      {
+         // Will need a list of folders to track here
+         let testFolders = ["Kicks", "Hats", "Snares"];
+         let testFolders_list = testFolders.map((folder, index) => {
+            return React.createElement("li", {key: index}, folder);
+         }
+         );
+         
+         return[
+            React.createElement("ul", {className: "folder-structure-view"}, testFolders_list)
+         ];
+      }
+   }
+
+   // View for the list of items in a folder
+   class FolderContentsView extends React.Component
+   {
+      render()
+      {
+         // Will need a list of the contents of the folder here
+         let testItems = ["Kick02.wav", "KickDry.wav", "BDrumBoom.ogg"];
+         let testItems_list = testItems.map((item, index) =>
+         {
+            return React.createElement("li", {key: index}, item);
+         }
+         );
+
+         return[
+            React.createElement("ul", {className: "folder-contents-view"}, testItems_list)
          ];
       }
    }
