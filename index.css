@@ -8,6 +8,12 @@
 
 /* MAIN */
 
+body
+{
+   margin: 0;
+   padding: 0;
+}
+
 .sidebar
 {
    width: var(--sidebar-width);
@@ -18,7 +24,6 @@
    left: 0;
    background-color: darkgrey;
    overflow-x: hidden;
-   padding: 5px;
 }
 
 .sidebar a
@@ -38,16 +43,21 @@
 .main
 {
    margin-left: var(--sidebar-width);
+   position: fixed;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 70%;
 }
 
 .sample
 {
    margin-left: var(--sidebar-width);
    width: 100%;
-   height: 200px;
+   height: 30%;
    position: fixed;
+   left: 0;
    bottom: 0;
-   padding: 10px;
    background-color: lightskyblue;
 }
 
@@ -55,6 +65,7 @@
 
 .folder-structure-view
 {
+   margin: 0;
    width: var(--folder-structure-width);
    height: 100%;
    position: fixed;
@@ -65,5 +76,7 @@
 
 .folder-contents-view
 {
-   margin-left: var(--folder-structure-width);
+   margin: 0;
+   margin-left: calc(var(--folder-structure-width) + 40px); /*+ 40px -> Padding from <ul> bullets*/
+   height: 100%;
 }
