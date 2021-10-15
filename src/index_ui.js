@@ -282,7 +282,48 @@ window.onload = () =>
       render()
       {
          return[
-            React.createElement("h1", null, "SLM: Groups")
+            React.createElement(GroupListView, null),
+            React.createElement(GroupContentsView, null)
+         ];
+      }
+   }
+
+   // View for the list of groups
+   class GroupListView extends React.Component
+   {
+      render()
+      {
+         // Will need the list of groups here
+         let testGroups = ["Collab Project", "Soundtrack", "SFX"];
+         let testGroups_list = testGroups.map((group, index) => {
+            return React.createElement("li", {key: index}, group);
+         }
+         );
+
+         return[
+            React.createElement("div", {className: "group-list-view"},
+               React.createElement("input", {type: "text", placeholder: "Search group..."}),
+               React.createElement("button", null, "Add group"),
+               React.createElement("ul", null, testGroups_list)
+            )
+         ];
+      }
+   }
+
+   // View for the list of items in a group
+   class GroupContentsView extends React.Component
+   {
+      render()
+      {
+         // Will need the items in a specified group here
+         let testItems = ["RenderStem03.wav", "LongCrash05.wav", "VoxVerse2.wav"];
+         let testItems_list = testItems.map((item, index) => {
+            return React.createElement("li", {key: index}, item);
+         }
+         );
+
+         return [
+            React.createElement("ul", {className: "group-contents-view"}, testItems_list)
          ];
       }
    }
