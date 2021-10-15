@@ -174,6 +174,7 @@ window.onload = () =>
       }
    }
 
+   // View for the list of libraries
    class LibraryListView extends React.Component
    {
       render()
@@ -192,6 +193,7 @@ window.onload = () =>
       }
    }
 
+   // View for the list of items in a library
    class LibraryContentsView extends React.Component
    {
       render()
@@ -222,7 +224,48 @@ window.onload = () =>
       render()
       {
          return[
-            React.createElement("h1", null, "SLM: Tags")
+            React.createElement(TagListView, null),
+            React.createElement(TagContentsView, null)
+         ];
+      }
+   }
+
+   // View for the list of tags
+   class TagListView extends React.Component
+   {
+      render()
+      {
+         // Will need the list of tags here
+         let testTags = ["Loop", "Pad", "Lead"];
+         let testTags_list = testTags.map((tag, index) => {
+            return React.createElement("li", {key: index}, tag);
+         }
+         );
+
+         return[
+            React.createElement("div", {className: "tag-list-view"},
+               React.createElement("input", {type: "text", placeholder: "Search tag..."}),
+               React.createElement("button", null, "Add tag"),
+               React.createElement("ul", null, testTags_list)
+            )
+         ];
+      }
+   }
+
+   // View for the list of items tagged with a specific tag
+   class TagContentsView extends React.Component
+   {
+      render()
+      {
+         // Will need the items tagged with a specified tag here
+         let testItems = ["DnBHats174.wav", "BreakLoop130.wav", "GuitarEm.wav"];
+         let testItems_list = testItems.map((item, index) => {
+            return React.createElement("li", {key: index}, item);
+         }
+         );
+
+         return [
+            React.createElement("ul", {className: "tag-contents-view"}, testItems_list)
          ];
       }
    }

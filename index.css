@@ -99,3 +99,33 @@ body
    margin-left: calc(var(--folder-structure-width) + 40px); /*+ 40px -> Padding from <ul> bullets*/
    height: 100%;
 }
+
+/* TAGS VIEW */
+
+.tag-list-view
+{
+   margin: 0;
+   width: var(--folder-structure-width);
+   height: 100%;
+   position: fixed;
+   top: 0;
+   left: var(--sidebar-width);
+   background-color: gainsboro;
+}
+
+.tag-list-view input
+{
+   width: 90%;
+}
+
+.tag-list-view button
+{
+   width: 100%;
+}
+
+.tag-contents-view
+{
+   margin: 0;
+   margin-left: calc(var(--folder-structure-width) + 40px); /*+ 40px -> Padding from <ul> bullets*/
+   height: 100%;
+}
