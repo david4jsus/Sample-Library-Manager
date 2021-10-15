@@ -168,7 +168,44 @@ window.onload = () =>
       render()
       {
          return[
-            React.createElement("h1", null, "SLM: Libraries")
+            React.createElement(LibraryListView, null),
+            React.createElement(LibraryContentsView, null)
+         ];
+      }
+   }
+
+   class LibraryListView extends React.Component
+   {
+      render()
+      {
+         // Will need a list of libraries to track here
+         let testLibraries = ["Neuro Basses", "Heavenly Strings", "Magma Sample Pack"];
+         let testLibraries_list = testLibraries.map((item, index) =>
+         {
+            return React.createElement("li", {key: index}, item);
+         }
+         );
+
+         return[
+            React.createElement("ul", {className: "library-list-view"}, testLibraries_list)
+         ];
+      }
+   }
+
+   class LibraryContentsView extends React.Component
+   {
+      render()
+      {
+         // Will need a list of contents of the library here
+         let testItems = ["GrainyBass03.wav", "SerumDistortedSquare.wav", "NeuroFire13.wav"];
+         let testItems_list = testItems.map((item, index) =>
+         {
+            return React.createElement("li", {key: index}, item);
+         }
+         );
+
+         return[
+            React.createElement("ul", {className: "library-contents-view"}, testItems_list)
          ];
       }
    }
