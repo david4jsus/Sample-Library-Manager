@@ -414,7 +414,8 @@ window.onload = () =>
       render()
       {
          return[
-            React.createElement("h1", null, "SLM: Settings")
+            React.createElement("h1", null, "SLM: Settings"),
+            React.createElement("p", null, "Settings will appear here... evetually...")
          ];
       }
    }
