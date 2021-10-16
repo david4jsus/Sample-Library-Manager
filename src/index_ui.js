@@ -8,6 +8,7 @@ window.onload = () =>
       LIBRARIES: "libraries",
       TAGS: "tags",
       GROUPS: "groups",
+      SEARCH: "search",
       ABOUT: "about",
       SETTINGS: "settings"
    };
@@ -51,7 +52,8 @@ window.onload = () =>
                   React.createElement("a", {id: "folders_link", href: "#", onClick: () => this.props.changeTabView(Views.FOLDERS)}, "Folders"),
                   React.createElement("a", {id: "libraries_link", href: "#", onClick: () => this.props.changeTabView(Views.LIBRARIES)}, "Libraries"),
                   React.createElement("a", {id: "tags_link", href: "#", onClick: () => this.props.changeTabView(Views.TAGS)}, "Tags"),
-                  React.createElement("a", {id: "groups_link", href: "#", onClick: () => this.props.changeTabView(Views.GROUPS)}, "Groups")
+                  React.createElement("a", {id: "groups_link", href: "#", onClick: () => this.props.changeTabView(Views.GROUPS)}, "Groups"),
+                  React.createElement("a", {id: "search_link", href: "#", onClick: () => this.props.changeTabView(Views.SEARCH)}, "Search")
                ),
                React.createElement("div", {className: "app-links"},
                   React.createElement("a", {id: "about_link", href: "#", onClick: () => this.props.changeTabView(Views.ABOUT)}, "About"),
@@ -83,6 +85,9 @@ window.onload = () =>
                break;
             case Views.GROUPS:
                view = React.createElement(GroupsView, null);
+               break;
+            case Views.SEARCH:
+               view = React.createElement(SearchView, null);
                break;
             case Views.ABOUT:
                view = React.createElement(AboutView, null);
@@ -324,6 +329,56 @@ window.onload = () =>
 
          return [
             React.createElement("ul", {className: "group-contents-view"}, testItems_list)
+         ];
+      }
+   }
+
+   // "Search" view
+   class SearchView extends React.Component
+   {
+      /*constructor(props)
+      {
+         super(props);
+         this.state = {};
+      }*/
+
+      render()
+      {
+         return[
+            React.createElement(SearchBarView, null),
+            React.createElement(SearchContentsView, null)
+         ];
+      }
+   }
+
+   // View for the search bar on the search tab
+   class SearchBarView extends React.Component
+   {
+      render()
+      {
+         return[
+            React.createElement("div", {className: "search-bar-view"},
+               React.createElement("input", {type: "text", placeholder: "Search..."}),
+               React.createElement("div", null, "Search options here...")
+            )
+         ];
+      }
+   }
+
+   class SearchContentsView extends React.Component
+   {
+      render()
+      {
+         // Need search results here
+         let testResults = ["Lead03.wav", "StemLeadDry.wav", "GrittyLeadFm.wav"];
+         let testResults_list = testResults.map((item, index) =>
+         {
+            return React.createElement("li", {key: index}, item);
+         }
+         );
+
+         return[
+            React.createElement("ul", {className: "search-contents-view"}, testResults_list)
          ];
       }
    }
