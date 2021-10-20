@@ -460,26 +460,34 @@ window.onload = () =>
    {
       render()
       {
-         // Make the "tags" area a bit more presentable
-         let tagsText = "";
-         for (let i = 0; i < this.props.tags.length; i++)
+         // Make each area a bit more presentable
+
+         let tagsText = this.props.tags === [] ? "[Add tags]" : "";
+         if (tagsText === "")
          {
-            if (i == this.props.tags.length - 1)
+            for (let i = 0; i < this.props.tags.length; i++)
             {
-               tagsText += this.props.tags[i];
-            }
-            else
-            {
-               tagsText += this.props.tags[i] + ", ";
+               if (i == this.props.tags.length - 1)
+               {
+                  tagsText += this.props.tags[i];
+               }
+               else
+               {
+                  tagsText += this.props.tags[i] + ", ";
+               }
             }
          }
+
+         let groupText = this.props.group === null ? "[Add to a group]" : this.props.group;
+
+         let libraryText = this.props.library === null ? "[Add to a library]" : this.props.library;
 
          return[
             React.createElement("div", {className: "file-component"},
                React.createElement("span", null, this.props.name),
                React.createElement("span", null, tagsText),
-               React.createElement("span", null, this.props.group),
-               React.createElement("span", null, this.props.library)
+               React.createElement("span", null, groupText),
+               React.createElement("span", null, libraryText)
             )
          ];
       }
