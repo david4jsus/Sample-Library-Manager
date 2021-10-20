@@ -148,15 +148,19 @@ window.onload = () =>
       render()
       {
          // Will need a list of the contents of the folder here
-         let testItems = ["Kick02.wav", "KickDry.wav", "BDrumBoom.ogg"];
+         let testItems = [
+            new FileObj("Kick02.wav", ["kicks", "drums"], "Drums", "Free Kicks Sample Pack"),
+            new FileObj("KickDry.wav", ["kicks", "drums"], "Drums", "Free Kicks Sample Pack"),
+            new FileObj("BDrumBoom.ogg", ["kicks", "drums"], "Drums", "Awesome EDM Kicks")
+         ];
          let testItems_list = testItems.map((item, index) =>
          {
-            return React.createElement("li", {key: index}, item);
+            return React.createElement(FileComponent, {key: index, name: item.name, tags: item.tags, group: item.group, library: item.library});
          }
          );
 
          return[
-            React.createElement("ul", {className: "folder-contents-view"}, testItems_list)
+            React.createElement("div", {className: "folder-contents-view"}, testItems_list)
          ];
       }
    }
@@ -204,10 +208,14 @@ window.onload = () =>
       render()
       {
          // Will need a list of contents of the library here
-         let testItems = ["GrainyBass03.wav", "SerumDistortedSquare.wav", "NeuroFire13.wav"];
+         let testItems = [
+            new FileObj("GrainyBass03.wav", ["bass", "processed"], "Basses", "Basses Pack"),
+            new FileObj("SerumDistortedSquare.wav", ["bass", "serum"], "Basses", "Free Serum Basses"),
+            new FileObj("NeuroFire13.ogg", ["bass", "processed"], "Basses", "Awesome Dubstep Basses")
+         ];
          let testItems_list = testItems.map((item, index) =>
          {
-            return React.createElement("li", {key: index}, item);
+            return React.createElement(FileComponent, {key: index, name: item.name, tags: item.tags, group: item.group, library: item.library});
          }
          );
 
@@ -263,9 +271,14 @@ window.onload = () =>
       render()
       {
          // Will need the items tagged with a specified tag here
-         let testItems = ["DnBHats174.wav", "BreakLoop130.wav", "GuitarEm.wav"];
-         let testItems_list = testItems.map((item, index) => {
-            return React.createElement("li", {key: index}, item);
+         let testItems = [
+            new FileObj("DnBHats174.wav", ["hats", "drums"], "Drums", "Loops Pack"),
+            new FileObj("BreakLoop130.wav", ["loop", "drums"], "Drums", "Free DnB Breaks"),
+            new FileObj("GuitarEm.ogg", ["loop", "melodic"], "Guitars", "Awesome EDM Loops")
+         ];
+         let testItems_list = testItems.map((item, index) =>
+         {
+            return React.createElement(FileComponent, {key: index, name: item.name, tags: item.tags, group: item.group, library: item.library});
          }
          );
 
@@ -321,9 +334,14 @@ window.onload = () =>
       render()
       {
          // Will need the items in a specified group here
-         let testItems = ["RenderStem03.wav", "LongCrash05.wav", "VoxVerse2.wav"];
-         let testItems_list = testItems.map((item, index) => {
-            return React.createElement("li", {key: index}, item);
+         let testItems = [
+            new FileObj("RenderStem03.wav", ["renders", "stems"], "Collab Project"),
+            new FileObj("LongCrash05.wav", ["crash", "drums"], "Collab Project"),
+            new FileObj("VoxVerse2.wav", ["vocals", "stems"], "Collab Project")
+         ];
+         let testItems_list = testItems.map((item, index) =>
+         {
+            return React.createElement(FileComponent, {key: index, name: item.name, tags: item.tags, group: item.group, library: item.library});
          }
          );
 
@@ -370,10 +388,14 @@ window.onload = () =>
       render()
       {
          // Need search results here
-         let testResults = ["Lead03.wav", "StemLeadDry.wav", "GrittyLeadFm.wav"];
+         let testResults = [
+            new FileObj("Lead03.wav", ["leads", "melodic"], "Melodic Loops", "Free Melodic Loops"),
+            new FileObj("StemLeadDry.wav", ["leads", "stems"], "Collab Project"),
+            new FileObj("GrittyLeadFm.wav", ["leads", "fm"], "Melodic Loops", "Free Melodic Loops")
+         ];
          let testResults_list = testResults.map((item, index) =>
          {
-            return React.createElement("li", {key: index}, item);
+            return React.createElement(FileComponent, {key: index, name: item.name, tags: item.tags, group: item.group, library: item.library});
          }
          );
 
@@ -428,6 +450,36 @@ window.onload = () =>
          return[
             React.createElement("div", {id: "sample_view", className: "sample"},
                React.createElement("h1", null, "[Selected sample here]")
+            )
+         ];
+      }
+   }
+
+   // A file to be listed
+   class FileComponent extends React.Component
+   {
+      render()
+      {
+         // Make the "tags" area a bit more presentable
+         let tagsText = "";
+         for (let i = 0; i < this.props.tags.length; i++)
+         {
+            if (i == this.props.tags.length - 1)
+            {
+               tagsText += this.props.tags[i];
+            }
+            else
+            {
+               tagsText += this.props.tags[i] + ", ";
+            }
+         }
+
+         return[
+            React.createElement("div", {className: "file-component"},
+               React.createElement("span", null, this.props.name),
+               React.createElement("span", null, tagsText),
+               React.createElement("span", null, this.props.group),
+               React.createElement("span", null, this.props.library)
             )
          ];
       }
