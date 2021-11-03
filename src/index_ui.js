@@ -130,14 +130,39 @@ window.onload = () =>
       render()
       {
          // Will need a list of folders to track here
-         let testFolders = ["Kicks", "Hats", "Snares"];
+         let testFolders = [
+            new FolderObj("Drums", [
+               new FolderObj("Kicks", [
+                  new FolderObj("Acoustic Kicks"),
+                  new FolderObj("Distorted Kicks"),
+                  new FolderObj("Tuned Kicks", [
+                     new FolderObj("Kicks E"),
+                     new FolderObj("Kicks G")
+                  ]
+                  )
+               ]
+               ),
+               new FolderObj("Hats", null),
+               new FolderObj("Snares", null)
+            ]
+            ),
+            new FolderObj("Melodic Loops", [
+               new FolderObj("Guitar", [
+                  new FolderObj("Guitar Riffs")
+               ]
+               ),
+               new FolderObj("Piano")
+            ]
+            ),
+            new FolderObj("Stems")
+         ];
          let testFolders_list = testFolders.map((folder, index) => {
-            return React.createElement("li", {key: index}, folder);
+            return React.createElement(FolderComponent, {key: index, folder: folder});
          }
          );
          
          return[
-            React.createElement("ul", {className: "folder-structure-view"}, testFolders_list)
+            React.createElement("div", {className: "folder-structure-view"}, testFolders_list)
          ];
       }
    }
@@ -488,6 +513,81 @@ window.onload = () =>
                React.createElement("span", null, tagsText),
                React.createElement("span", null, groupText),
                React.createElement("span", null, libraryText)
+            )
+         ];
+      }
+   }
+
+   // Folder component that shows a folder structure (needs to be passed a root folder object in its props)
+   class FolderComponent extends React.Component
+   {
+      constructor(props)
+      {
+         super(props);
+         this.state = {
+            open: false
+         };
+         this.open = this.open.bind(this);
+         this.close = this.close.bind(this);
+         this.toggleOpen = this.toggleOpen.bind(this);
+      }
+
+      // Open the folder to reveal any children folders
+      open()
+      {
+         this.setState({open: true});
+      }
+
+      // Close the folder to hide any children folders
+      close()
+      {
+         this.setState({open: false});
+      }
+
+      toggleOpen()
+      {
+         if (this.state.open)
+         {
+            this.close();
+         }
+         else
+         {
+            this.open();
+         }
+      }
+
+      render()
+      {
+         // Open/close icon (only if the folder has children folders)
+         let ocIcon = "";
+         
+         // Whether the children folders show
+         let cssClass = "";
+
+         // List of child folder components
+         let childrenList = [];
+
+         // Check whether this folder has any child folders
+         if (this.props.folder.children.length > 0)
+         {
+            // Update open/close icon
+            ocIcon = this.state.open ? "v " : "> ";
+
+            // Update children CSS
+            cssClass = this.state.open ? "": "folder-component-hide";
+
+            // Create child folder components
+            this.props.folder.children.forEach((subfolder) =>
+            {
+               childrenList.push(React.createElement(FolderComponent, {folder: subfolder}));
+            }
+            )
+         }
+
+         return[
+            React.createElement("div", {className: "folder-component"},
+               React.createElement("span", {onClick: this.toggleOpen}, ocIcon + this.props.folder.name),
+               React.createElement("div", {className: cssClass}, childrenList)
             )
          ];
       }

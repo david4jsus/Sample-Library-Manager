@@ -200,3 +200,20 @@ body
    padding: 3px;
    border: 1px solid black;
 }
+
+/* FOLDER COMPONENT */
+
+.folder-component
+{
+   display: default;
+}
+
+.folder-component > div
+{
+   margin-left: 10px;
+}
+
+.folder-component-hide
+{
+   display: none;
+}
