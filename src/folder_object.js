@@ -6,7 +6,7 @@
 const FolderObj = function(name, children)
 {
    this.name = name;
-   if (children || children !== null)
+   if (children && children !== null)
    {
       this.children = children;
    }
