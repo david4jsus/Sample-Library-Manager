@@ -1,7 +1,7 @@
 //== DEPENDENCIES ==//
 
-const {app, BrowserWindow} = require('electron');
-const path = require("path");
+const {app, BrowserWindow, ipcMain} = require('electron');
+const path = require('path');
 
 //== FUNCTIONS ==//
 
@@ -12,13 +12,23 @@ function CreateWindow()
    const win = new BrowserWindow(
    {
       width: 800,
-      height: 600
+      height: 600,
+      webPreferences: {
+         preload: path.join(__dirname, 'src/index.js')
+      }
    }
    );
 
    // Load the main HTML file to the window object
    win.loadFile('index.html');
 }
+
+//== FUNCTIONS AVAILABLE IN RENDERER ==//
+
+ipcMain.handle('test', () => {
+   return app.getPath('userData');
+}
+);
 
 //== MAIN APP ==//
 
