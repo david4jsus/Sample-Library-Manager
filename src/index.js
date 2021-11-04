@@ -1,9 +1,15 @@
 const {ipcRenderer} = require('electron');
 
-async function test()
+async function getFolders()
 {
-   let data = await ipcRenderer.invoke('test');
-   console.log(data);
+   let folders = await ipcRenderer.invoke('getFolders');
+   // console.log(folders);
+   return folders;
 }
 
-test();
+async function getAudioFiles()
+{
+   let audioFiles = await ipcRenderer.invoke('getAudioFiles');
+   // console.log(audioFiles);
+   return audioFiles;
+}

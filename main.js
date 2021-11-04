@@ -3,6 +3,10 @@
 const {app, BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
 
+// Global variables
+var trackedFolders = [];
+var trackedAudioFiles = [];
+
 //== FUNCTIONS ==//
 
 // Create the main app window
@@ -23,10 +27,23 @@ function CreateWindow()
    win.loadFile('index.html');
 }
 
+// Read saved data to populate views with
+function LoadData()
+{
+   // Read & update vars
+}
+
 //== FUNCTIONS AVAILABLE IN RENDERER ==//
 
-ipcMain.handle('test', () => {
-   return app.getPath('userData');
+ipcMain.handle('getFolders', () =>
+{
+   return trackedFolders;
+}
+);
+
+ipcMain.handle('getAudioFiles', () =>
+{
+   return trackedAudioFiles;
 }
 );
 
@@ -38,12 +55,16 @@ app.whenReady().then(() =>
    // Create the main app window
    CreateWindow();
 
+   // Update local variables according to saved data
+   //LoadData(); ======================================================================================================
+
    // If app is activated and there are no windows open, open one
    app.on('activate', () =>
    {
       if (BrowserWindow.getAllWindows().length === 0)
       {
          CreateWindow();
+         //LoadData(); ================================================================================================
       }
    }
    );
