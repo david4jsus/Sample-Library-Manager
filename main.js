@@ -2,6 +2,7 @@
 
 const {app, BrowserWindow, ipcMain} = require('electron');
 const path = require('path');
+const fs = require('fs');
 
 // Global variables
 var trackedFolders = [];
@@ -30,7 +31,24 @@ function CreateWindow()
 // Read saved data to populate views with
 function LoadData()
 {
-   // Read & update vars
+   // Read file for tracked audio files
+   fs.readFile(path.join(app.getPath('userData'), 'trackedaudiofiles'), (err, data) =>
+   {
+      if (err)
+      {
+         // If file not found, no problem, just don't read from it
+         if (err.code !== 'ENOENT')
+         {
+            console.error(err);
+         }
+      }
+      // If no errors and file found, read file
+      else
+      {
+         trackedAudioFiles = JSON.parse(data);
+      }
+   }
+   );
 }
 
 //== FUNCTIONS AVAILABLE IN RENDERER ==//
@@ -56,7 +74,7 @@ app.whenReady().then(() =>
    CreateWindow();
 
    // Update local variables according to saved data
-   //LoadData(); ======================================================================================================
+   LoadData();
 
    // If app is activated and there are no windows open, open one
    app.on('activate', () =>

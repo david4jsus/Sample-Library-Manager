@@ -13,3 +13,9 @@ async function getAudioFiles()
    // console.log(audioFiles);
    return audioFiles;
 }
+
+getAudioFiles().then((data) =>
+{
+   console.log(data);
+}//, (handle not receiving data) => {}
+);
