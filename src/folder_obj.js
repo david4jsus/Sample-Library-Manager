@@ -3,8 +3,9 @@
 */
 
 // Constructor
-const FolderObj = function(name, children)
+const FolderObj = function(id, name, children)
 {
+   this.id = id;
    this.name = name;
    if (children && children !== null)
    {
@@ -13,6 +14,16 @@ const FolderObj = function(name, children)
    else
    {
       this.children = [];
+   }
+}
+
+// Set the ID of the folder (DISCOURAGED)
+FolderObj.prototype.setID = function(newID)
+{
+   // Make sure the new ID is not empty
+   if (newID && newID !== "")
+   {
+      this.id = newID;
    }
 }
 

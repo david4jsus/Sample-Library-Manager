@@ -3,13 +3,24 @@
 */
 
 // Constructor
-const FileObj = function(filename, tags, group, library)
+const FileObj = function(id, filename, tags, group, library)
 {
+   this.id = id;
    this.filename = filename;
    this.name = filename;
    this.tags = tags ? tags : [];
    this.group = group ? group : null;
    this.library = library ? library : null;
+}
+
+// Set the ID of the file (NOT RECOMMENDED TO USE, BETTER TO ASSIGN AN ID ON OBJECT CREATION)
+FileObj.prototype.setID = function(newID)
+{
+   // Make sure the new ID is not empty
+   if (newID && newID !== "")
+   {
+      this.id = newID;
+   }
 }
 
 // Change the filename of the file
