@@ -1,6 +1,6 @@
 //== DEPENDENCIES ==//
 
-const {app, BrowserWindow, ipcMain} = require('electron');
+const {app, BrowserWindow, ipcMain, dialog} = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -127,6 +127,22 @@ function GetFoldersFromFolder(directory)
    );
 }
 
+// Show dialog to choose a folder
+function GetFoldersFromDialog()
+{
+   // Open dialog box
+   let folderPaths = dialog.showOpenDialogSync({
+      properties: ['openDirectory', 'multiSelections']
+   }
+   );
+
+   // undefined means the operation was canceled
+   if (folderPaths === undefined) folderPaths = [];
+
+   // Return selectedfolders (or empty array if none selected)
+   return folderPaths;
+}
+
 //== FUNCTIONS AVAILABLE IN RENDERER ==//
 
 ipcMain.handle('getFolders', () =>
@@ -138,6 +154,12 @@ ipcMain.handle('getFolders', () =>
 ipcMain.handle('getAudioFiles', () =>
 {
    return trackedAudioFiles;
+}
+);
+
+ipcMain.handle('folderDialogBox', () =>
+{
+   return GetFoldersFromDialog();
 }
 );
 

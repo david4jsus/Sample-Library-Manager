@@ -14,8 +14,21 @@ async function getAudioFiles()
    return audioFiles;
 }
 
-/*getAudioFiles().then((data) =>
+async function folderDialogBox()
+{
+   //let folderPaths = [];
+   return await ipcRenderer.invoke('folderDialogBox');
+   //return folderPaths;
+}
+
+/*getAudioFiles().then(data =>
 {
    console.log(data);
+}//, (handle not receiving data) => {}
+);*/
+
+/*folderDialogBox().then(folderPaths =>
+{
+   console.log(folderPaths);
 }//, (handle not receiving data) => {}
 );*/
