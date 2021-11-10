@@ -7,6 +7,7 @@ const fs = require('fs');
 // Global variables
 var trackedFolders = [];
 var trackedAudioFiles = [];
+var trackedFileTypes = ['.ogg', '.mp3', '.wav', '.flac']; // .midi? Presets?
 
 //== FUNCTIONS ==//
 
@@ -70,6 +71,51 @@ function SaveData()
    );
 }
 
+// Get files from a specified folder
+function GetFilesFromFolder(directory)
+{
+   // Store results in this variable
+   let fileList = [];
+
+   // Read directory
+   fs.readdir(directory, (err, files) =>
+   {
+      // Catch any errors
+      if (err)
+      {
+         console.error(err);
+      }
+      // If no errors, get files
+      else
+      {
+         // Filter file types that we want
+         fileList = files.filter(function(file)
+         {
+            // Keep track of whether a file matches one of the tracked file types
+            let condition = false;
+
+            // Compare file to eachtracked file type
+            for (let i = 0; i < trackedFileTypes.length; i++)
+            {
+               // If file matches successfully against any tracked file type, mark as successful check
+               if (file.endsWith(trackedFileTypes[i]))
+               {
+                  condition = true;
+                  break;
+               }
+            }
+
+            // Return check
+            return condition;
+         }
+         );
+         // Just console out files for now ////////////////////////////////////////////////////////////////////////////
+         console.log(fileList);
+      }
+   }
+   );
+}
+
 //== FUNCTIONS AVAILABLE IN RENDERER ==//
 
 ipcMain.handle('getFolders', () =>
@@ -94,7 +140,8 @@ app.whenReady().then(() =>
 
    // Update local variables according to saved data
    //LoadData(); ======================================================================================================
-   SaveData();
+   //SaveData();
+   GetFilesFromFolder(new URL('file:///G:/My Drive/Music Production/Samples/Custom/Basses'));
 
    // If app is activated and there are no windows open, open one
    app.on('activate', () =>
