@@ -116,6 +116,24 @@ function GetFilesFromFolder(directory)
    );
 }
 
+// Get folders in a specifiied folder
+function GetFoldersFromFolder(directory)
+{
+   // Read contents from a folder
+   return fs.readdirSync(directory)
+   // List items as the full path of the item
+   .map(item =>
+   {
+      return path.join(directory, item);
+   }
+   // Filter to get the items that are folders
+   ).filter((item) =>
+   {
+      return fs.lstatSync(item).isDirectory();
+   }
+   );
+}
+
 //== FUNCTIONS AVAILABLE IN RENDERER ==//
 
 ipcMain.handle('getFolders', () =>
@@ -141,7 +159,8 @@ app.whenReady().then(() =>
    // Update local variables according to saved data
    //LoadData(); ======================================================================================================
    //SaveData();
-   GetFilesFromFolder(new URL('file:///G:/My Drive/Music Production/Samples/Custom/Basses'));
+   //GetFilesFromFolder(new URL('file:///G:/My Drive/Music Production/Samples/Custom/Basses'));
+   console.log(GetFoldersFromFolder('G:/My Drive/Music Production/Samples/Custom/'));
 
    // If app is activated and there are no windows open, open one
    app.on('activate', () =>
