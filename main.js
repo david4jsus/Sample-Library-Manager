@@ -74,44 +74,37 @@ function SaveData()
 // Get files from a specified folder
 function GetFilesFromFolder(directory)
 {
-   // Store results in this variable
-   let fileList = [];
-
-   // Read directory
-   fs.readdir(directory, (err, files) =>
+   // Read contents from a folder
+   return fs.readdirSync(directory)
+   // List items as the full path of the item
+   .map(item =>
    {
-      // Catch any errors
-      if (err)
+      return path.join(directory, item);
+   }
+   // Filter to get the items that are files
+   ).filter(item =>
+   {
+      return fs.lstatSync(item).isFile();
+   }
+   // Filter to get the itmes that are of tracked file types
+   ).filter(function(file)
+   {
+      // Keep track of whether a file matches one of the tracked file types
+      let condition = false;
+
+      // Compare file to eachtracked file type
+      for (let i = 0; i < trackedFileTypes.length; i++)
       {
-         console.error(err);
-      }
-      // If no errors, get files
-      else
-      {
-         // Filter file types that we want
-         fileList = files.filter(function(file)
+         // If file matches successfully against any tracked file type, mark as successful check
+         if (file.endsWith(trackedFileTypes[i]))
          {
-            // Keep track of whether a file matches one of the tracked file types
-            let condition = false;
-
-            // Compare file to eachtracked file type
-            for (let i = 0; i < trackedFileTypes.length; i++)
-            {
-               // If file matches successfully against any tracked file type, mark as successful check
-               if (file.endsWith(trackedFileTypes[i]))
-               {
-                  condition = true;
-                  break;
-               }
-            }
-
-            // Return check
-            return condition;
+            condition = true;
+            break;
          }
-         );
-         // Just console out files for now ////////////////////////////////////////////////////////////////////////////
-         console.log(fileList);
       }
+
+      // Return check
+      return condition;
    }
    );
 }
@@ -127,7 +120,7 @@ function GetFoldersFromFolder(directory)
       return path.join(directory, item);
    }
    // Filter to get the items that are folders
-   ).filter((item) =>
+   ).filter(item =>
    {
       return fs.lstatSync(item).isDirectory();
    }
@@ -159,8 +152,8 @@ app.whenReady().then(() =>
    // Update local variables according to saved data
    //LoadData(); ======================================================================================================
    //SaveData();
-   //GetFilesFromFolder(new URL('file:///G:/My Drive/Music Production/Samples/Custom/Basses'));
-   console.log(GetFoldersFromFolder('G:/My Drive/Music Production/Samples/Custom/'));
+   //console.log(GetFilesFromFolder('G:/My Drive/Music Production/Samples/Custom/Basses'));
+   //console.log(GetFoldersFromFolder('G:/My Drive/Music Production/Samples/Custom/'));
 
    // If app is activated and there are no windows open, open one
    app.on('activate', () =>
