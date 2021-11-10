@@ -40,12 +40,31 @@ function LoadData()
          if (err.code !== 'ENOENT')
          {
             console.error(err);
+            return;
          }
       }
       // If no errors and file found, read file
       else
       {
          trackedAudioFiles = JSON.parse(data);
+      }
+   }
+   );
+}
+
+// Update and save information about tracked folders and files
+function SaveData()
+{
+   // Test stuff to write tothe file
+   let testData = "More stuff";
+
+   // Write file for tracked folders
+   fs.writeFile(path.join(app.getPath('userData'), "trackedfolders"), testData, (err) =>
+   {
+      if (err)
+      {
+         console.error(err);
+         return;
       }
    }
    );
@@ -74,7 +93,8 @@ app.whenReady().then(() =>
    CreateWindow();
 
    // Update local variables according to saved data
-   LoadData();
+   //LoadData(); ======================================================================================================
+   SaveData();
 
    // If app is activated and there are no windows open, open one
    app.on('activate', () =>
