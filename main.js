@@ -3,9 +3,37 @@
 const {app, BrowserWindow, ipcMain, dialog} = require('electron');
 const path = require('path');
 const fs = require('fs');
+const FileObj = require('./src/file_obj').FileObj;
+const FolderObj = require('./src/folder_obj').FolderObj;
 
-// Global variables
-var trackedFolders = [];
+//== GLOBAL VARIABLES ==//
+
+var trackedFolders = [ // TEST DATA ///////////////////////////////////////////////////////////////////////////////////
+   new FolderObj(23, "Drums", [
+      new FolderObj(24, "Kicks", [
+         new FolderObj(25, "Acoustic Kicks"),
+         new FolderObj(26, "Distorted Kicks"),
+         new FolderObj(27, "Tuned Kicks", [
+            new FolderObj(28, "Kicks E"),
+            new FolderObj(29, "Kicks G")
+         ]
+         )
+      ]
+      ),
+      new FolderObj(30, "Hats", null),
+      new FolderObj(31, "Snares", null)
+   ]
+   ),
+   new FolderObj(32, "Melodic Loops", [
+      new FolderObj(33, "Guitar", [
+         new FolderObj(34, "Guitar Riffs")
+      ]
+      ),
+      new FolderObj(35, "Piano")
+   ]
+   ),
+   new FolderObj(36, "Stems")
+];
 var trackedAudioFiles = [];
 var trackedFileTypes = ['.ogg', '.mp3', '.wav', '.flac']; // .midi? Presets?
 

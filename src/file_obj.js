@@ -90,3 +90,6 @@ FileObj.prototype.unsetLibrary = function()
 {
    this.library = null;
 }
+
+// Export the module
+module.exports.FileObj = FileObj;

@@ -59,3 +59,6 @@ FolderObj.prototype.removeFolderByName = function(childName)
       this.children.splice(childIndex, 1);
    }
 }
+
+// Export the module
+module.exports.FolderObj = FolderObj;
