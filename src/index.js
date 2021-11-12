@@ -1,34 +1,29 @@
-const {ipcRenderer} = require('electron');
+const {contextBridge, ipcRenderer} = require('electron');
 
-async function getFolders()
-{
-   let folders = await ipcRenderer.invoke('getFolders');
-   // console.log(folders);
-   return folders;
-}
-
-async function getAudioFiles()
-{
-   let audioFiles = await ipcRenderer.invoke('getAudioFiles');
-   // console.log(audioFiles);
-   return audioFiles;
-}
-
-async function folderDialogBox()
-{
-   //let folderPaths = [];
-   return await ipcRenderer.invoke('folderDialogBox');
-   //return folderPaths;
-}
-
-/*getAudioFiles().then(data =>
-{
-   console.log(data);
-}//, (handle not receiving data) => {}
-);*/
-
-/*folderDialogBox().then(folderPaths =>
-{
-   console.log(folderPaths);
-}//, (handle not receiving data) => {}
-);*/
+// Expose methods to renderer's window
+contextBridge.exposeInMainWorld(
+   "api",
+   {
+      // Get tracked folders data
+      getFolders: async function()
+      {
+         let folders = await ipcRenderer.invoke('getFolders');
+         // console.log(folders);
+         return folders;
+      },
+      // Get tracked audio files data
+      getAudioFiles: async function()
+      {
+         let audioFiles = await ipcRenderer.invoke('getAudioFiles');
+         // console.log(audioFiles);
+         return audioFiles;
+      },
+      // Open fialog box to get folder paths
+      folderDialogBox: async function()
+      {
+         //let folderPaths = [];
+         return await ipcRenderer.invoke('folderDialogBox');
+         //return folderPaths;
+      }
+   }
+);

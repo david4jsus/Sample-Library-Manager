@@ -127,17 +127,54 @@ window.onload = () =>
    // Folder structure view for FoldersView
    class FolderStructureView extends React.Component
    {
-      render()
+      constructor(props)
+      {
+         super(props);
+         this.state =
+         {
+            folderData: null
+         }
+      }
+
+      componentDidMount()
       {
          // Get list of tracked folders
-         let folders = getFolders();
-         let folders_list = folders.map((folder, index) => {
-            return React.createElement(FolderComponent, {key: index, folder: folder});
+         api.getFolders().then(data =>
+         {
+            this.setState({folderData: data});
+         }
+         )
+         // Get errors, if any
+         .catch(err =>
+         {
+            console.error(err);
          }
          );
+      }
+
+      render()
+      {
+         // Create usable list for React component if the folders have been loaded
+         let folders_list = [];
+         if (this.state.folderData !== null)
+         {
+            folders_list = this.state.folderData.map((folder, index) => {
+               return React.createElement(FolderComponent, {key: index, folder: folder});
+            }
+            );
+         }
+
+         // Check whether there are any folders
+         if (folders_list.length === 0)
+         {
+            folders_list = "No folders are currently being tracked";
+         }
+
+         // If component still hasn't fetched folders, notify user
+         let result = this.state.folders === null ? "Loading..." : folders_list;
          
          return[
-            React.createElement("div", {className: "folder-structure-view"}, folders_list)
+            React.createElement("div", {className: "folder-structure-view"}, result)
          ];
       }
    }
@@ -149,9 +186,9 @@ window.onload = () =>
       {
          // Will need a list of the contents of the folder here
          let testItems = [
-            {id: 256, filename: "Kick02.wav", tags: ["kicks", "drums"], group: "Drums", library: "Free Kicks Sample Pack"},
-            {id: 257, filename: "KickDry.wav", tags: ["kicks", "drums"], group: "Drums", library: "Free Kicks Sample Pack"},
-            {id: 258, filename: "BDrumBoom.ogg", tags: ["kicks", "drums"], group: "Drums", library: "Awesome EDM Kicks"}
+            {id: 256, name: "Kick02.wav", tags: ["kicks", "drums"], group: "Drums", library: "Free Kicks Sample Pack"},
+            {id: 257, name: "KickDry.wav", tags: ["kicks", "drums"], group: "Drums", library: "Free Kicks Sample Pack"},
+            {id: 258, name: "BDrumBoom.ogg", tags: ["kicks", "drums"], group: "Drums", library: "Awesome EDM Kicks"}
          ];
          let testItems_list = testItems.map((item, index) =>
          {
@@ -209,9 +246,9 @@ window.onload = () =>
       {
          // Will need a list of contents of the library here
          let testItems = [
-            {id: 637, filename: "GrainyBass03.wav", tags: ["bass", "processed"], group: "Basses", library: "Basses Pack"},
-            {id: 527, filename: "SerumDistortedSquare.wav", tags: ["bass", "serum"], group: "Basses", library: "Free Serum Basses"},
-            {id: 829, filename: "NeuroFire13.ogg", tags: ["bass", "processed"], group: "Basses", library: "Awesome Dubstep Basses"}
+            {id: 637, name: "GrainyBass03.wav", tags: ["bass", "processed"], group: "Basses", library: "Basses Pack"},
+            {id: 527, name: "SerumDistortedSquare.wav", tags: ["bass", "serum"], group: "Basses", library: "Free Serum Basses"},
+            {id: 829, name: "NeuroFire13.ogg", tags: ["bass", "processed"], group: "Basses", library: "Awesome Dubstep Basses"}
          ];
          let testItems_list = testItems.map((item, index) =>
          {
@@ -272,9 +309,9 @@ window.onload = () =>
       {
          // Will need the items tagged with a specified tag here
          let testItems = [
-            {id: 136, filename: "DnBHats174.wav", tags: ["hats", "drums"], group: "Drums", library: "Loops Pack"},
-            {id: 358, filename: "BreakLoop130.wav", tags: ["loop", "drums"], group: "Drums", library: "Free DnB Breaks"},
-            {id: 947, filename: "GuitarEm.ogg", tags: ["loop", "melodic"], group: "Guitars", library: "Awesome EDM Loops"}
+            {id: 136, name: "DnBHats174.wav", tags: ["hats", "drums"], group: "Drums", library: "Loops Pack"},
+            {id: 358, name: "BreakLoop130.wav", tags: ["loop", "drums"], group: "Drums", library: "Free DnB Breaks"},
+            {id: 947, name: "GuitarEm.ogg", tags: ["loop", "melodic"], group: "Guitars", library: "Awesome EDM Loops"}
          ];
          let testItems_list = testItems.map((item, index) =>
          {
@@ -335,9 +372,9 @@ window.onload = () =>
       {
          // Will need the items in a specified group here
          let testItems = [
-            {id: 432, filename: "RenderStem03.wav", tags: ["renders", "stems"], group: "Collab Project"},
-            {id: 462, filename: "LongCrash05.wav", tags: ["crash", "drums"], group: "Collab Project"},
-            {id: 820, filename: "VoxVerse2.wav", tags: ["vocals", "stems"], group: "Collab Project"}
+            {id: 432, name: "RenderStem03.wav", tags: ["renders", "stems"], group: "Collab Project"},
+            {id: 462, name: "LongCrash05.wav", tags: ["crash", "drums"], group: "Collab Project"},
+            {id: 820, name: "VoxVerse2.wav", tags: ["vocals", "stems"], group: "Collab Project"}
          ];
          let testItems_list = testItems.map((item, index) =>
          {
@@ -389,9 +426,9 @@ window.onload = () =>
       {
          // Need search results here
          let testResults = [
-            {id: 223, filename: "Lead03.wav", tags: ["leads", "melodic"], group: "Melodic Loops", library: "Free Melodic Loops"},
-            {id: 182, filename: "StemLeadDry.wav", tags: ["leads", "stems"], group: "Collab Project"},
-            {id: 628, filename: "GrittyLeadFm.wav", tags: ["leads", "fm"], group: "Melodic Loops", library: "Free Melodic Loops"}
+            {id: 223, name: "Lead03.wav", tags: ["leads", "melodic"], group: "Melodic Loops", library: "Free Melodic Loops"},
+            {id: 182, name: "StemLeadDry.wav", tags: ["leads", "stems"], group: "Collab Project"},
+            {id: 628, name: "GrittyLeadFm.wav", tags: ["leads", "fm"], group: "Melodic Loops", library: "Free Melodic Loops"}
          ];
          let testResults_list = testResults.map((item, index) =>
          {
@@ -499,7 +536,8 @@ window.onload = () =>
       constructor(props)
       {
          super(props);
-         this.state = {
+         this.state =
+         {
             open: false
          };
          this.open = this.open.bind(this);
