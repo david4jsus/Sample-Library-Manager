@@ -3,10 +3,11 @@
 */
 
 // Constructor
-const FolderObj = function(id, name, children)
+const FolderObj = function(id, path, children)
 {
    this.id = id;
-   this.name = name;
+   this.path = path;
+   this.name = path;
    if (children && children !== null)
    {
       this.children = children;
