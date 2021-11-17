@@ -6,11 +6,25 @@
 const FileObj = function(id, filename, tags, group, library)
 {
    this.id = id;
-   this.filename = filename;
+   this.filename = this.getNameFromPath(filename);
    this.name = filename;
    this.tags = tags ? tags : [];
    this.group = group ? group : null;
    this.library = library ? library : null;
+}
+
+// Get file name from its path
+FileObj.prototype.getNameFromPath = function(path)
+{
+   let delimiter = path.lastIndexOf('\\');
+   if (delimiter < 0)
+   {
+      return path;
+   }
+   else
+   {
+      return path.substring(delimiter + 1);
+   }
 }
 
 // Set the ID of the file (NOT RECOMMENDED TO USE, BETTER TO ASSIGN AN ID ON OBJECT CREATION)
