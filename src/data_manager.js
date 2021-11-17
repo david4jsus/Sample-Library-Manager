@@ -115,3 +115,63 @@ DataManager.prototype.addLibrary = function(library)
 // {
 //    this.trackedFileData.push(new FileObj(getNextID("file"), filename, tags, group, library));
 // }
+
+// Get a file from the list by id
+DataManager.prototype.getFileByID = function(id)
+{
+   return this.trackedFileData.find(file =>
+   {
+      file.id === id;
+   }
+   );
+}
+
+// Get a file from the list by name
+DataManager.prototype.getFileByName = function(name)
+{
+   return this.trackedFileData.find(file =>
+   {
+      file.name === name;
+   }
+   );
+}
+
+// Get multiple files from the list with the same name
+DataManager.prototype.getFilesByName = function(name)
+{
+   return this.trackedFileData.filter(file =>
+   {
+      file.name === name;
+   }
+   );
+}
+
+// Get a folder from the list by id
+DataManager.prototype.getFolderByID = function(id)
+{
+   return this.trackedFolderData.find(folder =>
+   {
+      folder.id === id;
+   }
+   );
+}
+
+// Get a folder from the list by name
+DataManager.prototype.getFolderByName = function(name)
+{
+   return this.trackedFolderData.find(folder =>
+   {
+      folder.name === name;
+   }
+   );
+}
+
+// Get multiple folders from the list with the same name
+DataManager.prototype.getFoldersByName = function(name)
+{
+   return this.trackedFolderData.filter(folder =>
+   {
+      folder.name === name;
+   }
+   );
+}
