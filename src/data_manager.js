@@ -181,7 +181,7 @@ DataManager.prototype.getFoldersByName = function(name)
 }
 
 // Get all relevant files in a folder
-DataManager.prototype.getRelevantFilesInFolder = function(folder)
+DataManager.prototype.getRelevantFilesInFolder = function(directory)
 {
    // Read contents from a folder
    return fs.readdirSync(directory)
@@ -222,4 +222,70 @@ DataManager.prototype.getRelevantFilesInFolder = function(folder)
 DataManager.prototype.parseAndInsertFileIntoList = function(file)
 {
    this.addFileData(file);
+}
+
+// Get all folder paths in a folder
+DataManager.prototype.getFoldersInFolder = function(directory)
+{
+   // Read contents from a folder
+   return fs.readdirSync(directory)
+   // List items as the full path of the item
+   .map(item =>
+   {
+      return path.join(directory, item);
+   }
+   // Filter to get the items that are folders
+   ).filter(item =>
+   {
+      return fs.lstatSync(item).isDirectory();
+   }
+   );
+}
+
+// Traverse a folder and add folder and file data, include subfolders if the argument is true
+DataManager.prototype.traverseAndParseFolder(directory, traverseSubFolders)
+{
+   /*
+      - Get current folder info
+         - Folder path
+         - Children paths --> Only if traverseSubFolders
+      - Add folder to list
+      - Get info of files in current folder
+         - File paths
+      - Add files to list
+      - Recurse through children paths --> Only if traverseSubFolders
+   */
+
+   // Useful variables
+   let subfolders = [];
+   let files = [];
+   
+   // If including subfolders, get paths of subfolders
+   if (traverseSubFolders)
+   {
+      subfolders = this.getFoldersInFolder(directory);
+   }
+
+   // Add the current directory to the list of tracked folders
+   this.addFolderData(directory, subfolders);
+
+   // Get all relevant files in this folder
+   files = this.getRelevantFilesInFolder(directory);
+
+   // Add files found to the list of tracked files
+   files.forEach(file =>
+   {
+      this.addFileData(file);
+   }
+   );
+
+   // If including subfolders, traverse through them
+   if (traverseSubFolders)
+   {
+      subfolders.forEach(path =>
+      {
+         this.traverseAndParseFolder(path);
+      }
+      );
+   }
 }

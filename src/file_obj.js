@@ -6,8 +6,8 @@
 const FileObj = function(id, filename, tags, group, library)
 {
    this.id = id;
-   this.filename = this.getNameFromPath(filename);
-   this.name = filename;
+   this.filename = filename;
+   this.name = this.getNameFromPath(filename);
    this.tags = tags ? tags : [];
    this.group = group ? group : null;
    this.library = library ? library : null;

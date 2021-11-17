@@ -6,8 +6,8 @@
 const FolderObj = function(id, path, children)
 {
    this.id = id;
-   this.path = this.getNameFromPath(path);
-   this.name = path;
+   this.path = path;
+   this.name = this.getNameFromPath(path);
    if (children && children !== null)
    {
       this.children = children;
@@ -19,7 +19,7 @@ const FolderObj = function(id, path, children)
 }
 
 // Get folder name from its path
-FileObj.prototype.getNameFromPath = function(path)
+FolderObj.prototype.getNameFromPath = function(path)
 {
    let delimiter = path.lastIndexOf('\\');
    if (delimiter < 0)
