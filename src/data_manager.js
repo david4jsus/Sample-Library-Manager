@@ -5,10 +5,14 @@
 // Dependencies
 const { FileObj } = require("./file_obj");
 const { FolderObj } = require("./folder_obj");
+const { fs } = require('fs');
+const { path } = require ('path');
 
 // Constructor
 const DataManager = function()
 {
+   var trackedFileTypes = ['.ogg', '.mp3', '.wav', '.flac']; // .midi? Presets?
+
    this.trackedFileData    = [];
    this.trackedFolderData  = [];
    this.trackedTagData     = [];
@@ -174,4 +178,48 @@ DataManager.prototype.getFoldersByName = function(name)
       folder.name === name;
    }
    );
+}
+
+// Get all relevant files in a folder
+DataManager.prototype.getRelevantFilesInFolder = function(folder)
+{
+   // Read contents from a folder
+   return fs.readdirSync(directory)
+   // List items as the full path of the item
+   .map(item =>
+   {
+      return path.join(directory, item);
+   }
+   // Filter to get the items that are files
+   ).filter(item =>
+   {
+      return fs.lstatSync(item).isFile();
+   }
+   // Filter to get the itmes that are of tracked file types
+   ).filter(function(file)
+   {
+      // Keep track of whether a file matches one of the tracked file types
+      let condition = false;
+
+      // Compare file to eachtracked file type
+      for (let i = 0; i < trackedFileTypes.length; i++)
+      {
+         // If file matches successfully against any tracked file type, mark as successful check
+         if (file.endsWith(trackedFileTypes[i]))
+         {
+            condition = true;
+            break;
+         }
+      }
+
+      // Return check
+      return condition;
+   }
+   );
+}
+
+// Parse a file's data and add it to the list
+DataManager.prototype.parseAndInsertFileIntoList = function(file)
+{
+   this.addFileData(file);
 }
