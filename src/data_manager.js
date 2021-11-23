@@ -3,15 +3,15 @@
 */
 
 // Dependencies
-const { FileObj } = require("./file_obj");
-const { FolderObj } = require("./folder_obj");
-const { fs } = require('fs');
-const { path } = require ('path');
+const fs = require('fs');
+const path = require ('path');
+const {FileObj} = require("./file_obj");
+const {FolderObj} = require("./folder_obj");
 
 // Constructor
 const DataManager = function()
 {
-   var trackedFileTypes = ['.ogg', '.mp3', '.wav', '.flac']; // .midi? Presets?
+   this.trackedFileTypes = ['.ogg', '.mp3', '.wav', '.flac']; // .midi? Presets?
 
    this.trackedFileData    = [];
    this.trackedFolderData  = [];
@@ -30,7 +30,7 @@ const DataManager = function()
 }
 
 // Get the next ID to be assigned
-DataManager.prototype.getNextID(type)
+DataManager.prototype.getNextID = function(type)
 {
    switch (type)
    {
@@ -39,23 +39,23 @@ DataManager.prototype.getNextID(type)
          break;
       
       case "file":
-         return currentFileID++;
+         return this.currentFileID++;
          break;
       
       case "folder":
-         return currentFileID++;
+         return this.currentFolderID++;
          break;
       
       case "tag":
-         return currentTagID++;
+         return this.currentTagID++;
          break;
       
       case "group":
-         return currentGroupID++;
+         return this.currentGroupID++;
          break;
       
       case "library":
-         return currentLibraryID++;
+         return this.currentLibraryID++;
          break;
    }
 }
@@ -67,9 +67,9 @@ DataManager.prototype.addFile = function(file)
 }
 
 // Add file data to the list
-DataManager.protytype.addFileData = function(filename, tags, group, library)
+DataManager.prototype.addFileData = function(filename, tags, group, library)
 {
-   this.trackedFileData.push(new FileObj(getNextID("file"), filename, tags, group, library));
+   this.trackedFileData.push(new FileObj(this.getNextID("file"), filename, tags, group, library));
 }
 
 // Add a folder to the list
@@ -79,9 +79,9 @@ DataManager.prototype.addFolder = function(folder)
 }
 
 // Add folder data to the list
-DataManager.protytype.addFolderData = function(path, children)
+DataManager.prototype.addFolderData = function(path, children)
 {
-   this.trackedfolderData.push(new FolderObj(getNextID("folder"), path, children));
+   this.trackedFolderData.push(new FolderObj(this.getNextID("folder"), path, children));
 }
 
 // Add a tag to the list
@@ -196,16 +196,16 @@ DataManager.prototype.getRelevantFilesInFolder = function(directory)
       return fs.lstatSync(item).isFile();
    }
    // Filter to get the itmes that are of tracked file types
-   ).filter(function(file)
+   ).filter(file =>
    {
       // Keep track of whether a file matches one of the tracked file types
       let condition = false;
 
       // Compare file to eachtracked file type
-      for (let i = 0; i < trackedFileTypes.length; i++)
+      for (let i = 0; i < this.trackedFileTypes.length; i++)
       {
          // If file matches successfully against any tracked file type, mark as successful check
-         if (file.endsWith(trackedFileTypes[i]))
+         if (file.endsWith(this.trackedFileTypes[i]))
          {
             condition = true;
             break;
@@ -243,7 +243,7 @@ DataManager.prototype.getFoldersInFolder = function(directory)
 }
 
 // Traverse a folder and add folder and file data, include subfolders if the argument is true
-DataManager.prototype.traverseAndParseFolder(directory, traverseSubFolders)
+DataManager.prototype.traverseAndParseFolder = function(directory, traverseSubFolders)
 {
    /*
       - Get current folder info
@@ -289,3 +289,6 @@ DataManager.prototype.traverseAndParseFolder(directory, traverseSubFolders)
       );
    }
 }
+
+// Export the module
+module.exports.DataManager = DataManager;

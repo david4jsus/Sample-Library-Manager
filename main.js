@@ -3,11 +3,13 @@
 const {app, BrowserWindow, ipcMain, dialog} = require('electron');
 const path = require('path');
 const fs = require('fs');
-const FileObj = require('./src/file_obj').FileObj;
-const FolderObj = require('./src/folder_obj').FolderObj;
+const {FileObj} = require('./src/file_obj');
+const {FolderObj} = require('./src/folder_obj');
+const {DataManager} = require('./src/data_manager');
 
 //== GLOBAL VARIABLES ==//
 
+var dm = new DataManager();
 var trackedFolders = [ // TEST DATA ///////////////////////////////////////////////////////////////////////////////////
    new FolderObj(23, "Drums", [
       new FolderObj(24, "Kicks", [
@@ -175,13 +177,13 @@ function GetFoldersFromDialog()
 
 ipcMain.handle('getFolders', () =>
 {
-   return trackedFolders;
+   return dm.trackedFolderData;
 }
 );
 
 ipcMain.handle('getAudioFiles', () =>
 {
-   return trackedAudioFiles;
+   return dm.trackedFileData;
 }
 );
 
@@ -204,6 +206,7 @@ app.whenReady().then(() =>
    //SaveData();
    //console.log(GetFilesFromFolder('G:/My Drive/Music Production/Samples/Custom/Basses'));
    //console.log(GetFoldersFromFolder('G:/My Drive/Music Production/Samples/Custom/'));
+   dm.traverseAndParseFolder('G:/My Drive/Music Production/Samples/Custom/', true);
 
    // If app is activated and there are no windows open, open one
    app.on('activate', () =>
