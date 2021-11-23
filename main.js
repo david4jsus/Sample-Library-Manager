@@ -206,7 +206,7 @@ app.whenReady().then(() =>
    //SaveData();
    //console.log(GetFilesFromFolder('G:/My Drive/Music Production/Samples/Custom/Basses'));
    //console.log(GetFoldersFromFolder('G:/My Drive/Music Production/Samples/Custom/'));
-   dm.traverseAndParseFolder('G:/My Drive/Music Production/Samples/Custom/', true);
+   dm.traverseAndParseFolder('G:\\My Drive\\Music Production\\Samples\\Custom', true);
 
    // If app is activated and there are no windows open, open one
    app.on('activate', () =>

@@ -79,9 +79,23 @@ DataManager.prototype.addFolder = function(folder)
 }
 
 // Add folder data to the list
-DataManager.prototype.addFolderData = function(path, children)
+DataManager.prototype.addFolderData = function(path, children, parentFolderID)
 {
-   this.trackedFolderData.push(new FolderObj(this.getNextID("folder"), path, children));
+   // Create new folder object
+   let newFolderObject = new FolderObj(this.getNextID("folder"), path, children);
+
+   // Whteher or not to create folder data as children of an existent folder
+   if (parentFolderID !== undefined && parentFolderID !== null && parentFolderID >= 0)
+   {
+      this.getFolderByID(parentFolderID).addChild(newFolderObject);
+   }
+   else
+   {
+      this.trackedFolderData.push(newFolderObject);
+   }
+
+   // Return the newly created ID
+   return newFolderObject.id;
 }
 
 // Add a tag to the list
@@ -155,7 +169,7 @@ DataManager.prototype.getFolderByID = function(id)
 {
    return this.trackedFolderData.find(folder =>
    {
-      folder.id === id;
+      return folder.id === id;
    }
    );
 }
@@ -185,18 +199,23 @@ DataManager.prototype.getRelevantFilesInFolder = function(directory)
 {
    // Read contents from a folder
    return fs.readdirSync(directory)
+
    // List items as the full path of the item
    .map(item =>
    {
       return path.join(directory, item);
    }
+   )
+
    // Filter to get the items that are files
-   ).filter(item =>
+   .filter(item =>
    {
       return fs.lstatSync(item).isFile();
    }
+   )
+
    // Filter to get the itmes that are of tracked file types
-   ).filter(file =>
+   .filter(file =>
    {
       // Keep track of whether a file matches one of the tracked file types
       let condition = false;
@@ -229,11 +248,13 @@ DataManager.prototype.getFoldersInFolder = function(directory)
 {
    // Read contents from a folder
    return fs.readdirSync(directory)
+
    // List items as the full path of the item
    .map(item =>
    {
       return path.join(directory, item);
    }
+
    // Filter to get the items that are folders
    ).filter(item =>
    {
@@ -243,7 +264,7 @@ DataManager.prototype.getFoldersInFolder = function(directory)
 }
 
 // Traverse a folder and add folder and file data, include subfolders if the argument is true
-DataManager.prototype.traverseAndParseFolder = function(directory, traverseSubFolders)
+DataManager.prototype.traverseAndParseFolder = function(directory, traverseSubFolders, parentDirectoryID)
 {
    /*
       - Get current folder info
@@ -255,10 +276,11 @@ DataManager.prototype.traverseAndParseFolder = function(directory, traverseSubFo
       - Add files to list
       - Recurse through children paths --> Only if traverseSubFolders
    */
-
+   
    // Useful variables
-   let subfolders = [];
-   let files = [];
+   let subfolders = [];         // The folders inside this folder
+   let files = [];              // The files inside this folder
+   let currentDirectoryID = -1; // The created ID of this folder
    
    // If including subfolders, get paths of subfolders
    if (traverseSubFolders)
@@ -267,11 +289,19 @@ DataManager.prototype.traverseAndParseFolder = function(directory, traverseSubFo
    }
 
    // Add the current directory to the list of tracked folders
-   this.addFolderData(directory, subfolders);
+   if (parentDirectoryID !== undefined && parentDirectoryID !== null && parentDirectoryID >= 0)
+   {
+      // Use this if a parent directory ID was given, meaning this folder will be added as a child of another folder
+      currentDirectoryID = this.addFolderData(directory, null, parentDirectoryID);
+   }
+   else
+   {
+      currentDirectoryID = this.addFolderData(directory);
+   }
 
    // Get all relevant files in this folder
    files = this.getRelevantFilesInFolder(directory);
-
+   
    // Add files found to the list of tracked files
    files.forEach(file =>
    {
@@ -284,7 +314,7 @@ DataManager.prototype.traverseAndParseFolder = function(directory, traverseSubFo
    {
       subfolders.forEach(path =>
       {
-         this.traverseAndParseFolder(path);
+         this.traverseAndParseFolder(path, true, currentDirectoryID);
       }
       );
    }

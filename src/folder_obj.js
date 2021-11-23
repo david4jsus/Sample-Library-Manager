@@ -53,7 +53,7 @@ FolderObj.prototype.setName = function(newName)
 }
 
 // Add a child folder
-FolderObj.prototype.addFolder = function(newChild)
+FolderObj.prototype.addChild = function(newChild)
 {
    this.children.push(newChild);
 }
