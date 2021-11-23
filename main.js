@@ -187,6 +187,12 @@ ipcMain.handle('getAudioFiles', () =>
 }
 );
 
+ipcMain.handle('getAudioFilesInFolder', (event, args) =>
+{
+   return dm.getFilesByFolderID(args);
+}
+);
+
 ipcMain.handle('folderDialogBox', () =>
 {
    return GetFoldersFromDialog();

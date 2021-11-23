@@ -3,14 +3,15 @@
 */
 
 // Constructor
-const FileObj = function(id, filename, tags, group, library)
+const FileObj = function(id, folderID, filename, tags, group, library)
 {
-   this.id = id;
+   this.id       = id;
+   this.folder   = folderID;
    this.filename = filename;
-   this.name = this.getNameFromPath(filename);
-   this.tags = tags ? tags : [];
-   this.group = group ? group : null;
-   this.library = library ? library : null;
+   this.name     = this.getNameFromPath(filename);
+   this.tags     = tags ? tags : [];
+   this.group    = group ? group : null;
+   this.library  = library ? library : null;
 }
 
 // Get file name from its path

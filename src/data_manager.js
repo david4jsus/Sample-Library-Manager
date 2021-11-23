@@ -67,9 +67,9 @@ DataManager.prototype.addFile = function(file)
 }
 
 // Add file data to the list
-DataManager.prototype.addFileData = function(filename, tags, group, library)
+DataManager.prototype.addFileData = function(directoryID, filename, tags, group, library)
 {
-   this.trackedFileData.push(new FileObj(this.getNextID("file"), filename, tags, group, library));
+   this.trackedFileData.push(new FileObj(this.getNextID("file"), directoryID, filename, tags, group, library));
 }
 
 // Add a folder to the list
@@ -139,7 +139,7 @@ DataManager.prototype.getFileByID = function(id)
 {
    return this.trackedFileData.find(file =>
    {
-      file.id === id;
+      return file.id === id;
    }
    );
 }
@@ -149,7 +149,7 @@ DataManager.prototype.getFileByName = function(name)
 {
    return this.trackedFileData.find(file =>
    {
-      file.name === name;
+      return file.name === name;
    }
    );
 }
@@ -159,7 +159,7 @@ DataManager.prototype.getFilesByName = function(name)
 {
    return this.trackedFileData.filter(file =>
    {
-      file.name === name;
+      return file.name === name;
    }
    );
 }
@@ -179,7 +179,7 @@ DataManager.prototype.getFolderByName = function(name)
 {
    return this.trackedFolderData.find(folder =>
    {
-      folder.name === name;
+      return folder.name === name;
    }
    );
 }
@@ -189,7 +189,17 @@ DataManager.prototype.getFoldersByName = function(name)
 {
    return this.trackedFolderData.filter(folder =>
    {
-      folder.name === name;
+      return folder.name === name;
+   }
+   );
+}
+
+// Get files from the list that are tracked under the smae specific folder
+DataManager.prototype.getFilesByFolderID = function(folderID)
+{
+   return this.trackedFileData.filter(file =>
+   {
+      return file.folder === folderID;
    }
    );
 }
@@ -238,10 +248,10 @@ DataManager.prototype.getRelevantFilesInFolder = function(directory)
 }
 
 // Parse a file's data and add it to the list
-DataManager.prototype.parseAndInsertFileIntoList = function(file)
+/*DataManager.prototype.parseAndInsertFileIntoList = function(file)
 {
    this.addFileData(file);
-}
+}*/
 
 // Get all folder paths in a folder
 DataManager.prototype.getFoldersInFolder = function(directory)
@@ -305,7 +315,7 @@ DataManager.prototype.traverseAndParseFolder = function(directory, traverseSubFo
    // Add files found to the list of tracked files
    files.forEach(file =>
    {
-      this.addFileData(file);
+      this.addFileData(currentDirectoryID, file);
    }
    );
 

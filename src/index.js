@@ -18,6 +18,12 @@ contextBridge.exposeInMainWorld(
          // console.log(audioFiles);
          return audioFiles;
       },
+      getAudioFilesInFolder: async function(folderID)
+      {
+         let audioFiles = await ipcRenderer.invoke('getAudioFilesInFolder', folderID);
+         // console.log(audioFiles);
+         return audioFiles;
+      },
       // Open fialog box to get folder paths
       folderDialogBox: async function()
       {
