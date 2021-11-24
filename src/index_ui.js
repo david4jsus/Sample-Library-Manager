@@ -109,17 +109,25 @@ window.onload = () =>
    // "Folders" view
    class FoldersView extends React.Component
    {
-      /*constructor(props)
+      constructor(props)
       {
          super(props);
-         this.state = {};
-      }*/
+         this.state = {
+            selectedFolder: -1
+         };
+         this.selectFolderID = this.selectFolderID.bind(this);
+      }
+
+      selectFolderID(folderID)
+      {
+         this.setState({selectedFolder: folderID});
+      }
 
       render()
       {
          return[
-            React.createElement(FolderStructureView, null),
-            React.createElement(FolderContentsView, null)
+            React.createElement(FolderStructureView, {selectFolder: this.selectFolderID}),
+            React.createElement(FolderContentsView, {selectedFolder: this.state.selectedFolder})
          ];
       }
    }
@@ -144,6 +152,7 @@ window.onload = () =>
             this.setState({folderData: data});
          }
          )
+
          // Get errors, if any
          .catch(err =>
          {
@@ -158,8 +167,8 @@ window.onload = () =>
          let folders_list = [];
          if (this.state.folderData !== null)
          {
-            folders_list = this.state.folderData.map((folder, index) => {
-               return React.createElement(FolderComponent, {key: index, folder: folder});
+            folders_list = this.state.folderData.map((folder) => {
+               return React.createElement(FolderComponent, {key: folder.id, folder: folder, selectFolder: this.props.selectFolder});
             }
             );
          }
@@ -182,22 +191,75 @@ window.onload = () =>
    // View for the list of items in a folder
    class FolderContentsView extends React.Component
    {
+      constructor(props)
+      {
+         super(props);
+         this.state = {
+            fileData: null
+         }
+      }
+
+      componentDidMount()
+      {
+         // Get list of tracked files in a folder, if folder specified
+         if (this.props.selectedFolder >= 0)
+         {
+            api.getAudioFilesInFolder(this.props.selectedFolder).then(data =>
+            {
+               this.setState({fileData: data});
+            }
+            )
+
+            // Get errors, if any
+            .catch(err =>
+            {
+               console.error(err);
+            }
+            );
+         }
+      }
+
+      componentDidUpdate(prevProps)
+      {
+         // Continue only if props haven't changed
+         if (this.props.selectedFolder === prevProps.selectedFolder)
+         {
+            return;
+         }
+
+         // Get list of tracked files in a folder, if folder specified
+         if (this.props.selectedFolder >= 0)
+         {
+            api.getAudioFilesInFolder(this.props.selectedFolder).then(data =>
+            {
+               this.setState({fileData: data});
+            }
+            )
+
+            // Get errors, if any
+            .catch(err =>
+            {
+               console.error(err);
+            }
+            );
+         }
+      }
+
       render()
       {
-         // Will need a list of the contents of the folder here
-         let testItems = [
-            {id: 256, name: "Kick02.wav", tags: ["kicks", "drums"], group: "Drums", library: "Free Kicks Sample Pack"},
-            {id: 257, name: "KickDry.wav", tags: ["kicks", "drums"], group: "Drums", library: "Free Kicks Sample Pack"},
-            {id: 258, name: "BDrumBoom.ogg", tags: ["kicks", "drums"], group: "Drums", library: "Awesome EDM Kicks"}
-         ];
-         let testItems_list = testItems.map((item, index) =>
+         // Create usable list for React component if the files have been loaded
+         let files_list = [];
+         if (this.state.fileData !== null)
          {
-            return React.createElement(FileComponent, {key: index, name: item.name, tags: item.tags, group: item.group, library: item.library});
+            files_list = this.state.fileData.map((item) =>
+            {
+               return React.createElement(FileComponent, {key: item.id, name: item.name, tags: item.tags, group: item.group, library: item.library});
+            }
+            );
          }
-         );
 
          return[
-            React.createElement("div", {className: "folder-contents-view"}, testItems_list)
+            React.createElement("div", {className: "folder-contents-view"}, files_list)
          ];
       }
    }
@@ -543,6 +605,7 @@ window.onload = () =>
          this.open = this.open.bind(this);
          this.close = this.close.bind(this);
          this.toggleOpen = this.toggleOpen.bind(this);
+         this.handleClick = this.handleClick.bind(this);
       }
 
       // Open the folder to reveal any children folders
@@ -569,6 +632,12 @@ window.onload = () =>
          }
       }
 
+      handleClick()
+      {
+         this.toggleOpen();
+         this.props.selectFolder(this.props.folder.id);
+      }
+
       render()
       {
          // Open/close icon (only if the folder has children folders)
@@ -592,14 +661,14 @@ window.onload = () =>
             // Create child folder components
             this.props.folder.children.forEach((subfolder) =>
             {
-               childrenList.push(React.createElement(FolderComponent, {folder: subfolder}));
+               childrenList.push(React.createElement(FolderComponent, {folder: subfolder, selectFolder: this.props.selectFolder}));
             }
             )
          }
 
          return[
             React.createElement("div", {className: "folder-component"},
-               React.createElement("span", {onClick: this.toggleOpen}, ocIcon + this.props.folder.name),
+               React.createElement("span", {onClick: this.handleClick}, ocIcon + this.props.folder.name),
                React.createElement("div", {className: cssClass}, childrenList)
             )
          ];
