@@ -8,6 +8,16 @@ const path = require ('path');
 const {FileObj} = require("./file_obj");
 const {FolderObj} = require("./folder_obj");
 
+// Helper filename enum
+const filenameEnum =
+{
+   files: "filedata.json",
+   folders: "folderdata.json",
+   tags: "tagdata.json",
+   groups: "groupdata.json",
+   libraries: "librarydata.json"
+}
+
 // Constructor
 const DataManager = function()
 {
@@ -328,6 +338,164 @@ DataManager.prototype.traverseAndParseFolder = function(directory, traverseSubFo
       }
       );
    }
+}
+
+// Read saved data to populate local data
+function LoadData()
+{
+   // Read file for tracked audio files
+   fs.readFile(path.join(app.getPath('userData'), filenameEnum.files), (err, data) =>
+   {
+      if (err)
+      {
+         // If file not found, no problem, just don't read from it
+         if (err.code !== 'ENOENT')
+         {
+            console.error(err);
+            return;
+         }
+      }
+      // If no errors and file found, read file
+      else
+      {
+         trackedFileData = JSON.parse(data);
+      }
+   }
+   );
+
+   // Read file for tracked folders
+   fs.readFile(path.join(app.getPath('userData'), filenameEnum.folders), (err, data) =>
+   {
+      if (err)
+      {
+         // If file not found, no problem, just don't read from it
+         if (err.code !== 'ENOENT')
+         {
+            console.error(err);
+            return;
+         }
+      }
+      // If no errors and file found, read file
+      else
+      {
+         trackedFolderData = JSON.parse(data);
+      }
+   }
+   );
+
+   // Read file for tags data
+   fs.readFile(path.join(app.getPath('userData'), filenameEnum.tags), (err, data) =>
+   {
+      if (err)
+      {
+         // If file not found, no problem, just don't read from it
+         if (err.code !== 'ENOENT')
+         {
+            console.error(err);
+            return;
+         }
+      }
+      // If no errors and file found, read file
+      else
+      {
+         trackedTagData = JSON.parse(data);
+      }
+   }
+   );
+
+   // Read file for group data
+   fs.readFile(path.join(app.getPath('userData'), filenameEnum.groups), (err, data) =>
+   {
+      if (err)
+      {
+         // If file not found, no problem, just don't read from it
+         if (err.code !== 'ENOENT')
+         {
+            console.error(err);
+            return;
+         }
+      }
+      // If no errors and file found, read file
+      else
+      {
+         trackedGroupData = JSON.parse(data);
+      }
+   }
+   );
+
+   // Read file for library data
+   fs.readFile(path.join(app.getPath('userData'), filenameEnum.libraries), (err, data) =>
+   {
+      if (err)
+      {
+         // If file not found, no problem, just don't read from it
+         if (err.code !== 'ENOENT')
+         {
+            console.error(err);
+            return;
+         }
+      }
+      // If no errors and file found, read file
+      else
+      {
+         trackedLibraryData = JSON.parse(data);
+      }
+   }
+   );
+}
+
+// Update and save information about tracked folders and files
+function SaveData(type)
+{
+   // Useful variables
+   let filename;
+   let data;
+
+   // Figure out what is going to be saved
+   switch (type)
+   {
+      default:
+         break;
+      
+      case "file":
+         filename = filenameEnum.files;
+         data = trackedFileData;
+         break;
+      
+      case "folder":
+         filename = filenameEnum.folders;
+         data = trackedFolderData;
+         break;
+      
+      case "tag":
+         filename = filenameEnum.tags;
+         data = trackedTagData;
+         break;
+      
+      case "group":
+         filename = filenameEnum.groups;
+         data = trackedGroupData;
+         break;
+      
+      case "library":
+         filename = filenameEnum.libraries;
+         data = trackedLibraryData;
+         break;
+   }
+
+   // Continue if a valid type was successfully chosen
+   if (!filename || !data) return;
+
+   // Write file for the specified saved data
+   fs.writeFile(path.join(app.getPath('userData'), filename), data, (err) =>
+   {
+      if (err)
+      {
+         console.error(err);
+         return;
+      }
+   }
+   );
 }
 
 // Export the module
