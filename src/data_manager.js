@@ -84,7 +84,47 @@ DataManager.prototype.addFile = function(file)
 // Add file data to the list
 DataManager.prototype.addFileData = function(directoryID, filename, tags, group, library)
 {
-   this.trackedFileData.push(new FileObj(this.getNextID("file"), directoryID, filename, tags, group, library));
+   // Useful variables
+   let duplicateID = false;
+   let duplicatePath = false;
+   let newID = -1;
+
+   // Get a new ID and change it if it's already in use
+   do
+   {
+      // Create ID for this file item
+      newID = this.getNextID('file');
+
+      // Check for already existing ID and/or path
+      duplicateID = false;
+      for (let i = 0; i < this.trackedFileData.length; i++)
+      {
+         // Test for duplicate ID
+         if (newID === this.trackedFileData[i].id)
+         {
+            duplicateID = true;
+         }
+
+         // Test for duplicate path
+         if (filename === this.trackedFileData[i].filename)
+         {
+            duplicatePath = true;
+         }
+
+         // If any duplicates found, break the loop
+         if (duplicateID || duplicatePath)
+         {
+            break;
+         }
+      }
+
+      // If duplicate path found, no need to worry about the ID anymore
+      if (duplicatePath) return;
+   }
+   while (duplicateID);
+
+   // Assuming at this point that the ID is good and the file is not already being tracked, add data to the list
+   this.trackedFileData.push(new FileObj(newID, directoryID, filename, tags, group, library));
 }
 
 // Add a folder to the list
@@ -96,8 +136,47 @@ DataManager.prototype.addFolder = function(folder)
 // Add folder data to the list
 DataManager.prototype.addFolderData = function(path, children, parentFolderID)
 {
-   // Create new folder object
-   let newFolderObject = new FolderObj(this.getNextID("folder"), path, children);
+   // Useful variables
+   let duplicateID = false;
+   let duplicatePath = false;
+   let newID = -1;
+
+   // Get a new ID and change it if it's already in use
+   do
+   {
+      // Create ID for this file item
+      newID = this.getNextID('folder');
+
+      // Check for already existing ID and/or path
+      duplicateID = false;
+      for (let i = 0; i < this.trackedFolderData.length; i++)
+      {
+         // Test for duplicate ID
+         if (newID === this.trackedFolderData[i].id)
+         {
+            duplicateID = true;
+         }
+
+         // Test for duplicate path
+         if (path === this.trackedFolderData[i].path)
+         {
+            duplicatePath = true;
+         }
+
+         // If any duplicates found, break the loop
+         if (duplicateID || duplicatePath)
+         {
+            break;
+         }
+      }
+
+      // If duplicate path found, no need to worry about the ID anymore
+      if (duplicatePath) return -1;
+   }
+   while (duplicateID);
+
+   // Assuming at this point that the ID is good and the folder is not already being tracked, add data to the list
+   let newFolderObject = new FolderObj(newID, path, children);
 
    // Whteher or not to create folder data as children of an existent folder
    if (parentFolderID !== undefined && parentFolderID !== null && parentFolderID >= 0)
@@ -323,6 +402,9 @@ DataManager.prototype.traverseAndParseFolder = function(directory, traverseSubFo
    {
       currentDirectoryID = this.addFolderData(directory);
    }
+
+   // Stop if something went wrong
+   if (currentDirectoryID < 0) return;
 
    // Get all relevant files in this folder
    files = this.getRelevantFilesInFolder(directory);
