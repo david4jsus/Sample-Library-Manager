@@ -1,13 +1,12 @@
 //== DEPENDENCIES ==//
 
 const {app, BrowserWindow, ipcMain, dialog} = require('electron');
-const path = require('path');
-const fs = require('fs');
-const {DataManager} = require('./src/data_manager');
+const path                                  = require('path');
+const {DataManager}                         = require('./src/data_manager');
 
 //== GLOBAL VARIABLES ==//
 
-var dm = new DataManager();
+var dm = new DataManager(app.getPath('userData'));
 
 //== FUNCTIONS ==//
 
@@ -77,15 +76,12 @@ ipcMain.handle('folderDialogBox', () =>
 app.whenReady().then(() =>
 {
    // Update local variables according to saved data
-   //LoadData();
+   dm.loadData();
    
    // Create the main app window
    CreateWindow();
 
-   //SaveData();
-   //console.log(GetFilesFromFolder('G:/My Drive/Music Production/Samples/Custom/Basses'));
-   //console.log(GetFoldersFromFolder('G:/My Drive/Music Production/Samples/Custom/'));
-   //dm.traverseAndParseFolder('G:\\My Drive\\Music Production\\Samples\\Custom', true);
+   //dm.traverseAndParseFolder('G:\\My Drive\\Music Production\\Samples\\Custom', true); //////////////////////////////
 
    // If app is activated and there are no windows open, open one
    app.on('activate', () =>

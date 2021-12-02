@@ -3,24 +3,25 @@
 */
 
 // Dependencies
-const fs = require('fs');
-const path = require ('path');
-const {FileObj} = require("./file_obj");
+const fs          = require('fs');
+const path        = require ('path');
+const {FileObj}   = require("./file_obj");
 const {FolderObj} = require("./folder_obj");
 
 // Helper filename enum
 const filenameEnum =
 {
-   files: "filedata.json",
-   folders: "folderdata.json",
-   tags: "tagdata.json",
-   groups: "groupdata.json",
+   files:     "filedata.json",
+   folders:   "folderdata.json",
+   tags:      "tagdata.json",
+   groups:    "groupdata.json",
    libraries: "librarydata.json"
 }
 
 // Constructor
-const DataManager = function()
+const DataManager = function (userDataPath)
 {
+   this.userDataPath = (userDataPath && userDataPath !== null) ? userDataPath : null;
    this.trackedFileTypes = ['.ogg', '.mp3', '.wav', '.flac']; // .midi? Presets?
 
    this.trackedFileData    = [];
@@ -37,6 +38,12 @@ const DataManager = function()
 
    // Load saved data from saved files
    // LoadSavedData();
+}
+
+// Set the user data path
+DataManager.prototype.setUserDataPath = function (newPath)
+{
+   this.userDataPath = newPath;
 }
 
 // Get the next ID to be assigned
@@ -338,13 +345,25 @@ DataManager.prototype.traverseAndParseFolder = function(directory, traverseSubFo
       }
       );
    }
+
+   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   // Save data
+   this.saveData("file");
+   this.saveData("folder");
 }
 
 // Read saved data to populate local data
-function LoadData()
+DataManager.prototype.loadData = function()
 {
+   // Check that the user data path is good
+   if (!this.userDataPath || this.userDataPath === null)
+   {
+      console.error("ERROR: User data path was not specified to Data Manager!");
+      return;
+   }
+
    // Read file for tracked audio files
-   fs.readFile(path.join(app.getPath('userData'), filenameEnum.files), (err, data) =>
+   fs.readFile(path.join(this.userDataPath, filenameEnum.files), 'utf-8', (err, data) =>
    {
       if (err)
       {
@@ -358,13 +377,13 @@ function LoadData()
       // If no errors and file found, read file
       else
       {
-         trackedFileData = JSON.parse(data);
+         this.trackedFileData = JSON.parse(data);
       }
    }
    );
 
    // Read file for tracked folders
-   fs.readFile(path.join(app.getPath('userData'), filenameEnum.folders), (err, data) =>
+   fs.readFile(path.join(this.userDataPath, filenameEnum.folders), 'utf-8', (err, data) =>
    {
       if (err)
       {
@@ -378,13 +397,13 @@ function LoadData()
       // If no errors and file found, read file
       else
       {
-         trackedFolderData = JSON.parse(data);
+         this.trackedFolderData = JSON.parse(data);
       }
    }
    );
 
    // Read file for tags data
-   fs.readFile(path.join(app.getPath('userData'), filenameEnum.tags), (err, data) =>
+   fs.readFile(path.join(this.userDataPath, filenameEnum.tags), 'utf-8', (err, data) =>
    {
       if (err)
       {
@@ -398,13 +417,13 @@ function LoadData()
       // If no errors and file found, read file
       else
       {
-         trackedTagData = JSON.parse(data);
+         this.trackedTagData = JSON.parse(data);
       }
    }
    );
 
    // Read file for group data
-   fs.readFile(path.join(app.getPath('userData'), filenameEnum.groups), (err, data) =>
+   fs.readFile(path.join(this.userDataPath, filenameEnum.groups), 'utf-8', (err, data) =>
    {
       if (err)
       {
@@ -418,13 +437,13 @@ function LoadData()
       // If no errors and file found, read file
       else
       {
-         trackedGroupData = JSON.parse(data);
+         this.trackedGroupData = JSON.parse(data);
       }
    }
    );
 
    // Read file for library data
-   fs.readFile(path.join(app.getPath('userData'), filenameEnum.libraries), (err, data) =>
+   fs.readFile(path.join(this.userDataPath, filenameEnum.libraries), 'utf-8', (err, data) =>
    {
       if (err)
       {
@@ -438,15 +457,22 @@ function LoadData()
       // If no errors and file found, read file
       else
       {
-         trackedLibraryData = JSON.parse(data);
+         this.trackedLibraryData = JSON.parse(data);
       }
    }
    );
 }
 
 // Update and save information about tracked folders and files
-function SaveData(type)
+DataManager.prototype.saveData = function(type)
 {
+   // Check that the user data path is good
+   if (!this.userDataPath || this.userDataPath === null)
+   {
+      console.error("ERROR: User data path was not specified to Data Manager!");
+      return;
+   }
+
    // Useful variables
    let filename;
    let data;
@@ -459,27 +485,27 @@ function SaveData(type)
       
       case "file":
          filename = filenameEnum.files;
-         data = trackedFileData;
+         data = this.trackedFileData;
          break;
       
       case "folder":
          filename = filenameEnum.folders;
-         data = trackedFolderData;
+         data = this.trackedFolderData;
          break;
       
       case "tag":
          filename = filenameEnum.tags;
-         data = trackedTagData;
+         data = this.trackedTagData;
          break;
       
       case "group":
          filename = filenameEnum.groups;
-         data = trackedGroupData;
+         data = this.trackedGroupData;
          break;
       
       case "library":
          filename = filenameEnum.libraries;
-         data = trackedLibraryData;
+         data = this.trackedLibraryData;
          break;
    }
 
@@ -487,7 +513,7 @@ function SaveData(type)
    if (!filename || !data) return;
 
    // Write file for the specified saved data
-   fs.writeFile(path.join(app.getPath('userData'), filename), data, (err) =>
+   fs.writeFile(path.join(this.userDataPath, filename), JSON.stringify(data), (err) =>
    {
       if (err)
       {
