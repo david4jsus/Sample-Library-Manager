@@ -11,6 +11,7 @@ const {FolderObj} = require("./folder_obj");
 // Helper filename enum
 const filenameEnum =
 {
+   meta:      "meta.json",
    files:     "filedata.json",
    folders:   "folderdata.json",
    tags:      "tagdata.json",
@@ -35,9 +36,6 @@ const DataManager = function (userDataPath)
    this.currentTagID     = 0;
    this.currentGroupID   = 0;
    this.currentLibraryID = 0;
-
-   // Load saved data from saved files
-   // LoadSavedData();
 }
 
 // Set the user data path
@@ -362,6 +360,33 @@ DataManager.prototype.loadData = function()
       return;
    }
 
+   // Read file for meta info
+   fs.readFile(path.join(this.userDataPath, filenameEnum.meta), 'utf-8', (err, data) =>
+   {
+      if (err)
+      {
+         // If file not found, no problem, just don't read from it
+         if (err.code !== 'ENOENT')
+         {
+            console.error(err);
+            return;
+         }
+      }
+      // If no errors and file found, read file
+      else
+      {
+         console.log(data);
+         let metaInfo = JSON.parse(data);
+         this.currentFileID = metaInfo.currentFileID;
+         this.currentFolderID = metaInfo.currentFolderID;
+         this.currentTagID = metaInfo.currentTagID;
+         this.currentGroupID = metaInfo.currentGroupID;
+         this.currentLibraryID = metaInfo.currentLibraryID;
+         console.log(this.currentFileID);
+      }
+   }
+   );
+
    // Read file for tracked audio files
    fs.readFile(path.join(this.userDataPath, filenameEnum.files), 'utf-8', (err, data) =>
    {
@@ -514,6 +539,24 @@ DataManager.prototype.saveData = function(type)
 
    // Write file for the specified saved data
    fs.writeFile(path.join(this.userDataPath, filename), JSON.stringify(data), (err) =>
+   {
+      if (err)
+      {
+         console.error(err);
+         return;
+      }
+   }
+   );
+
+   // Write some meta info as well
+   let metaInfo = {
+      "currentFileID": this.currentFileID,
+      "currentFolderID": this.currentFolderID,
+      "currentTagID": this.currentTagID,
+      "currentGroupID": this.currentGroupID,
+      "currentLibraryID": this.currentLibraryID
+   };
+   fs.writeFile(path.join(this.userDataPath, filenameEnum.meta), JSON.stringify(metaInfo), (err) =>
    {
       if (err)
       {
