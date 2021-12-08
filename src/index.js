@@ -24,12 +24,12 @@ contextBridge.exposeInMainWorld(
          // console.log(audioFiles);
          return audioFiles;
       },
-      // Open fialog box to get folder paths
+      // Open fialog box to get folder paths and return whether the operation was successsful
       folderDialogBox: async function()
       {
-         //let folderPaths = [];
-         return await ipcRenderer.invoke('folderDialogBox');
-         //return folderPaths;
+         let success = await ipcRenderer.invoke('folderDialogBox');
+         // console.log(success);
+         return success;
       }
    }
 );

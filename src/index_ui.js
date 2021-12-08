@@ -113,9 +113,11 @@ window.onload = () =>
       {
          super(props);
          this.state = {
-            selectedFolder: -1
+            selectedFolder: -1,
+            k: 0
          };
          this.selectFolderID = this.selectFolderID.bind(this);
+         this.updatekey = this.updatekey.bind(this);
       }
 
       selectFolderID(folderID)
@@ -123,11 +125,17 @@ window.onload = () =>
          this.setState({selectedFolder: folderID});
       }
 
+      // Used for refreshing folder contents view without changing folder to view
+      updatekey(newkey)
+      {
+         this.setState({k: newkey});
+      }
+
       render()
       {
          return[
-            React.createElement(FolderStructureView, {selectFolder: this.selectFolderID}),
-            React.createElement(FolderContentsView, {selectedFolder: this.state.selectedFolder})
+            React.createElement(FolderStructureView, {selectFolder: this.selectFolderID, updatekey: this.updatekey}),
+            React.createElement(FolderContentsView, {selectedFolder: this.state.selectedFolder, key: this.state.k})
          ];
       }
    }
@@ -142,14 +150,24 @@ window.onload = () =>
          {
             folderData: null
          }
+         this.updateData = this.updateData.bind(this);
+         this.addFolder = this.addFolder.bind(this);
       }
 
       componentDidMount()
+      {
+         // Get data to display
+         this.updateData();
+      }
+
+      // Get the most recent data
+      updateData()
       {
          // Get list of tracked folders
          api.getFolders().then(data =>
          {
             this.setState({folderData: data});
+            this.props.updatekey(Date.now()); // Used for refreshing folder contents view without changing folder to view
          }
          )
 
@@ -157,6 +175,17 @@ window.onload = () =>
          .catch(err =>
          {
             console.error(err);
+         }
+         );
+      }
+
+      // Add folders to track
+      addFolder()
+      {
+         api.folderDialogBox().then(success =>
+         {
+            // If the operation was successful, re-render component to show latest data
+            if (success) this.updateData();
          }
          );
       }
@@ -183,7 +212,11 @@ window.onload = () =>
          let result = this.state.folders === null ? "Loading..." : folders_list;
          
          return[
-            React.createElement("div", {className: "folder-structure-view"}, result)
+            React.createElement("div", {className: "folder-structure-view"},
+               React.createElement("button", {onClick: this.addFolder}, "Add folder"),
+               React.createElement("hr", null),
+               result
+            )
          ];
       }
    }
@@ -201,22 +234,7 @@ window.onload = () =>
 
       componentDidMount()
       {
-         // Get list of tracked files in a folder, if folder specified
-         if (this.props.selectedFolder >= 0)
-         {
-            api.getAudioFilesInFolder(this.props.selectedFolder).then(data =>
-            {
-               this.setState({fileData: data});
-            }
-            )
-
-            // Get errors, if any
-            .catch(err =>
-            {
-               console.error(err);
-            }
-            );
-         }
+         this.updateData();
       }
 
       componentDidUpdate(prevProps)
@@ -227,6 +245,13 @@ window.onload = () =>
             return;
          }
 
+         // Fetch latest relevant file data
+         this.updateData();
+      }
+
+      // Get the most recent data
+      updateData()
+      {
          // Get list of tracked files in a folder, if folder specified
          if (this.props.selectedFolder >= 0)
          {

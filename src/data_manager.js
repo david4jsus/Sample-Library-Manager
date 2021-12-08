@@ -146,9 +146,10 @@ DataManager.prototype.addFolderData = function(path, children, parentFolderID)
    {
       // Create ID for this file item
       newID = this.getNextID('folder');
+      let existingID = -1; // Store the ID of already existing entry if found
 
       // Check for already existing ID and/or path
-      duplicateID = false;
+      let duplicateID = false;
       for (let i = 0; i < this.trackedFolderData.length; i++)
       {
          // Test for duplicate ID
@@ -161,6 +162,7 @@ DataManager.prototype.addFolderData = function(path, children, parentFolderID)
          if (path === this.trackedFolderData[i].path)
          {
             duplicatePath = true;
+            existingID = this.trackedFolderData[i].id;
          }
 
          // If any duplicates found, break the loop
@@ -171,7 +173,7 @@ DataManager.prototype.addFolderData = function(path, children, parentFolderID)
       }
 
       // If duplicate path found, no need to worry about the ID anymore
-      if (duplicatePath) return -1;
+      if (duplicatePath) return existingID;
    }
    while (duplicateID);
 
@@ -286,6 +288,23 @@ DataManager.prototype.getFoldersByName = function(name)
       return folder.name === name;
    }
    );
+}
+
+// Check whether a folder path is being tracked
+DataManager.prototype.isFolderPathBeingTracked = function(folderPath)
+{
+   // Loop through array searching for a matching folder path
+   for (let i = 0; i < this.trackedFolderData.length; i++)
+   {
+      // If match found, stop the search and return true
+      if (this.trackedFolderData[i].path === folderPath)
+      {
+         return true;
+      }
+   }
+
+   // Loop ended, meaning no match was found, so return false
+   return false;
 }
 
 // Get files from the list that are tracked under the smae specific folder
@@ -457,14 +476,12 @@ DataManager.prototype.loadData = function()
       // If no errors and file found, read file
       else
       {
-         console.log(data);
          let metaInfo = JSON.parse(data);
          this.currentFileID = metaInfo.currentFileID;
          this.currentFolderID = metaInfo.currentFolderID;
          this.currentTagID = metaInfo.currentTagID;
          this.currentGroupID = metaInfo.currentGroupID;
          this.currentLibraryID = metaInfo.currentLibraryID;
-         console.log(this.currentFileID);
       }
    }
    );
